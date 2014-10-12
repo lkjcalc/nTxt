@@ -23,12 +23,12 @@ inline int currentline(char* textbuffer, int pos);
 inline int currentline_nosoftbreak(const char* textbuffer, int pos);
 
 
-int checkednextline(char* textbuffer, int pos);//if in last line, returns 0
+int checkednextline(char* textbuffer, int pos); //if in last line, returns 0
 
 int checkednextline_nosoftbreak(const char* textbuffer, int pos);
 
 
-int nextline(char* textbuffer, int pos);//if in last line, returns start of last line
+int nextline(char* textbuffer, int pos); //if in last line, returns start of last line
 
 int nextline_nosoftbreak(char* textbuffer, int pos);
 

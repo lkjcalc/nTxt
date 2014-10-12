@@ -7,55 +7,58 @@
 
 //internal functions because undoing an insert and redoing a delete do the same thing
 
-static void undoredo_delete(action_t* action, char* textbuffer, int* pos, int* cursorscreenrow, int* cursorscreencol, int softnewline){
-    if(softnewline){
+static void undoredo_delete(action_t* action, char* textbuffer, int* pos, int* cursorscreenrow, int* cursorscreencol, int softnewline)
+{
+    if (softnewline) {
         *cursorscreenrow += softlinenum(textbuffer, action->pos) - softlinenum(textbuffer, *pos);
     }
-    else{
+    else {
         *cursorscreenrow += linenum(textbuffer, action->pos) - linenum(textbuffer, *pos);
         *cursorscreencol += getw_nosoftbreak(textbuffer, action->pos) - getw_nosoftbreak(textbuffer, *pos);
     }
-    if(*cursorscreencol < 0)
+    if (*cursorscreencol < 0)
         *cursorscreencol = 0;
-    else if(*cursorscreencol >= SCREEN_WIDTH/CHAR_WIDTH)
-        *cursorscreencol = SCREEN_WIDTH/CHAR_WIDTH - 1;
-    if(*cursorscreenrow < 0)
+    else if (*cursorscreencol >= SCREEN_WIDTH / CHAR_WIDTH)
+        *cursorscreencol = SCREEN_WIDTH / CHAR_WIDTH - 1;
+    if (*cursorscreenrow < 0)
         *cursorscreenrow = 0;
-    else if(*cursorscreenrow >= SCREEN_HEIGHT/CHAR_HEIGHT)
-        *cursorscreenrow = SCREEN_HEIGHT/CHAR_HEIGHT - 1;
+    else if (*cursorscreenrow >= SCREEN_HEIGHT / CHAR_HEIGHT)
+        *cursorscreenrow = SCREEN_HEIGHT / CHAR_HEIGHT - 1;
     *pos = action->pos;
     remove_range_action_unlogged(textbuffer, action->pos, action->len);
 }
 
-static int undoredo_insert(action_t* action, char** textbufferp, int* pos, int* cursorscreenrow, int* cursorscreencol, int softnewline){
+static int undoredo_insert(action_t* action, char** textbufferp, int* pos, int* cursorscreenrow, int* cursorscreencol, int softnewline)
+{
     int retval = insert_range_action_unlogged(textbufferp, action->pos, action->len, action->text);
     *pos = action->pos + action->len;
 
-    if(softnewline){
+    if (softnewline) {
         *cursorscreenrow += softlinenum(*textbufferp, *pos) - softlinenum(*textbufferp, action->pos);
     }
-    else{
+    else {
         *cursorscreenrow += linenum(*textbufferp, *pos) - linenum(*textbufferp, action->pos);
         *cursorscreencol += getw_nosoftbreak(*textbufferp, *pos) - getw_nosoftbreak(*textbufferp, action->pos);
     }
-    if(*cursorscreencol < 0)
+    if (*cursorscreencol < 0)
         *cursorscreencol = 0;
-    else if(*cursorscreencol >= SCREEN_WIDTH/CHAR_WIDTH)
-        *cursorscreencol = SCREEN_WIDTH/CHAR_WIDTH - 1;
-    if(*cursorscreenrow < 0)
+    else if (*cursorscreencol >= SCREEN_WIDTH / CHAR_WIDTH)
+        *cursorscreencol = SCREEN_WIDTH / CHAR_WIDTH - 1;
+    if (*cursorscreenrow < 0)
         *cursorscreenrow = 0;
-    else if(*cursorscreenrow >= SCREEN_HEIGHT/CHAR_HEIGHT)
-        *cursorscreenrow = SCREEN_HEIGHT/CHAR_HEIGHT - 1;
+    else if (*cursorscreenrow >= SCREEN_HEIGHT / CHAR_HEIGHT)
+        *cursorscreenrow = SCREEN_HEIGHT / CHAR_HEIGHT - 1;
 
     return retval;
 }
 
 //externally accessible functions
-int undoredo_undo(char** textbufferp, int* pos, int* cursorscreenrow, int* cursorscreencol, int softnewline){
+int undoredo_undo(char** textbufferp, int* pos, int* cursorscreenrow, int* cursorscreencol, int softnewline)
+{
     action_t* undoaction = history_undo();
-    if(undoaction == NULL)//no action to be undone left => do nothing
+    if (undoaction == NULL)//no action to be undone left => do nothing
         return 0;
-    if(undoaction->is_insert){
+    if (undoaction->is_insert) {
         undoredo_delete(undoaction, *textbufferp, pos, cursorscreenrow, cursorscreencol, softnewline);
     }
     else
@@ -63,13 +66,14 @@ int undoredo_undo(char** textbufferp, int* pos, int* cursorscreenrow, int* curso
     return 0;
 }
 
-int undoredo_redo(char** textbufferp, int* pos, int* cursorscreenrow, int* cursorscreencol, int softnewline){
+int undoredo_redo(char** textbufferp, int* pos, int* cursorscreenrow, int* cursorscreencol, int softnewline)
+{
     action_t* redoaction = history_redo();
-    if(redoaction == NULL)//no action to be redone left => do nothing
+    if (redoaction == NULL)//no action to be redone left => do nothing
         return 0;
-    if(redoaction->is_insert)
+    if (redoaction->is_insert)
         return undoredo_insert(redoaction, textbufferp, pos, cursorscreenrow, cursorscreencol, softnewline);
-    else{
+    else {
         undoredo_delete(redoaction, *textbufferp, pos, cursorscreenrow, cursorscreencol, softnewline);
     }
     return 0;

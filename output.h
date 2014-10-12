@@ -5,16 +5,21 @@
 #define CHAR_WIDTH 8
 
 #define TAB_WIDTH 4
+
+// unused ?
 #define MAX_COL SCREEN_WIDTH/CHAR_WIDTH
+// unused ?
 #define MAX_LINE SCREEN_HEIGHT/CHAR_HEIGHT
 
-inline void setPixelBuf(void* scrbuf, unsigned x, unsigned y, uint16_t color);
+inline void setPixelBuf(void* scrbuf, unsigned x, unsigned y, uint16_t color); // unused ?
 
 void putChar(void* scrbuf, unsigned x, unsigned y, uint8_t chr);
 
-void putCharColor(void* scrbuf, unsigned x, unsigned y, uint8_t chr, uint16_t chrcolor, uint16_t bgcolor);
+void putCharColor(void* scrbuf, unsigned x, unsigned y, uint8_t chr, uint16_t chrcolor, uint16_t bgcolor); // unused ?
 
-void dispString(void* scrbuf, unsigned x, unsigned y, const char* message);/*40 cols à 20 lines*/
+void dispString(void* scrbuf, unsigned x, unsigned y, const char* message);
+
+/*40 cols Ã  20 lines*/
 
 void dispStringColor(void* scrbuf, unsigned x, unsigned y, const char* message, uint16_t chrcolor, uint16_t bgcolor);
 

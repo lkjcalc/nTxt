@@ -7,8 +7,10 @@
 #define ARROW_LEFT_NUM 4
 
 uint8_t readarrow();
+
 char readc();
-char* reads(uint8_t* scrbuf, int x, int y, char* str, int num);
+
+char* reads(uint8_t* scrbuf, int x, int y, char* str, int num); // unused ?
 //int getch(); //custom syscall
 
 
