@@ -1,5 +1,4 @@
 #include <os.h>
-#include "utils.h"
 #include "menu.h"
 #include "output.h"
 
@@ -15,7 +14,7 @@ static int dispMenu(void* scrbuf, int x, int y, const char* entrylist[], int sel
     int i;
 
     for(i=0; entrylist[i][0] != '\0'; i++)
-        w = max(w, (int)strlen(entrylist[i]));
+        w = max(w, strlen(entrylist[i]));
     h = i*(CHAR_HEIGHT + 4);
     w = 2 + (w + 1)*CHAR_WIDTH;
 

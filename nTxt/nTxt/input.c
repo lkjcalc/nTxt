@@ -164,9 +164,6 @@ char readc(){
         else
             return ')';
     }
-	if(isKeyPressed(KEY_NSPIRE_FLAG)){
-		return '%';
-	}
     return '\0';
 }
 

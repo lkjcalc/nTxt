@@ -33,7 +33,7 @@ int nextline(char* textbuffer, int pos);//if in last line, returns start of last
 int nextline_nosoftbreak(char* textbuffer, int pos);
 
 
-int _getw(char* textbuffer, int pos);
+int getw(char* textbuffer, int pos);
 
 int getw_nosoftbreak(const char* textbuffer, int pos);
 

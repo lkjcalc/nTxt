@@ -1,10 +1,8 @@
 #include <os.h>
-#include <dirent.h>
 #include "filebrowser.h"
 #include "output.h"
 #include "input.h"
 #include "menu.h"
-#include "fileio.h"
 
 #define TITLE_Y 0
 #define TITLE_HEIGHT (CHAR_HEIGHT + 4)
@@ -120,13 +118,7 @@ int filebrowser(void* scrbuf, char* file, char* title){
     int fileselected = 0;
     int i;
     int inputpause = 0;
-	if(get_last_doc(currentdir) != 0){
-		getcwd(currentdir, FILENAME_MAX+1);
-	}
-	else{
-		*(strrchr(currentdir,'/') + 1) = '\0';
-	}
-	
+    getcwd(currentdir, FILENAME_MAX+1);
     num_files = get_filenames(currentdir, filenames);
     if(num_files == -1)
         return 1;

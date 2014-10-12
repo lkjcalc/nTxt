@@ -75,7 +75,7 @@ inline int remove_range_action(char* textbuffer, int pos, int len){
 inline int delete_action(char* textbuffer, int* pos, int* cursorscreenrow, int* cursorscreencol, int* selectionstart, int* selectionend, int softnewline){
     if(*pos == *selectionend){
         if(softnewline)
-            *cursorscreenrow -= countsoftnewl_withinitialw(textbuffer+*selectionstart, _getw(textbuffer, *selectionstart), *selectionend - *selectionstart);
+            *cursorscreenrow -= countsoftnewl_withinitialw(textbuffer+*selectionstart, getw(textbuffer, *selectionstart), *selectionend - *selectionstart);
         else{
             char restore = textbuffer[*selectionend];
             textbuffer[*selectionend] = '\0';

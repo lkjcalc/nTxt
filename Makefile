@@ -1,21 +1,49 @@
+DEBUG = FALSE
+
 GCC = nspire-gcc
-LD = nspire-ld-bflt
-GCCFLAGS = -Os -Wall -Wextra -marm -nostdlib
+AS  = nspire-as
+GXX = nspire-g++
+LD  = nspire-ld
+GENZEHN = genzehn
+
+GCCFLAGS = -Wall -W -marm
 LDFLAGS =
-EXE = nTxt20.tns
-OBJS = texteditor.o input.o output.o utils.o menu.o fileio.o navigation.o filebrowser.o actions.o editactions.o history.o undoredo.o
+ZEHNFLAGS = --name "nTxt"
+
+ifeq ($(DEBUG),FALSE)
+	GCCFLAGS += -Os
+else
+	GCCFLAGS += -O0 -g
+endif
+
+OBJS = $(patsubst %.c, %.o, $(shell find . -name \*.c))
+OBJS += $(patsubst %.cpp, %.o, $(shell find . -name \*.cpp))
+OBJS += $(patsubst %.S, %.o, $(shell find . -name \*.S))
+EXE = nTxt
 DISTDIR = .
 vpath %.tns $(DISTDIR)
+vpath %.elf $(DISTDIR)
 
-all: $(EXE)
+all: $(EXE).prg.tns
 
 %.o: %.c
 	$(GCC) $(GCCFLAGS) -c $<
 
-$(EXE): $(OBJS)
+%.o: %.cpp
+	$(GXX) $(GCCFLAGS) -c $<
+	
+%.o: %.S
+	$(AS) -c $<
+
+$(EXE).elf: $(OBJS)
 	mkdir -p $(DISTDIR)
-	$(LD) $(LDFLAGS) $^ -o $(DISTDIR)/$@
+	$(LD) $^ -o $(DISTDIR)/$@ $(LDFLAGS)
+
+$(EXE).tns: $(EXE).elf
+	$(GENZEHN) --input $(DISTDIR)/$^ --output $(DISTDIR)/$@ $(ZEHNFLAGS)
+
+$(EXE).prg.tns: $(EXE).tns
+	make-prg $(DISTDIR)/$^ $(DISTDIR)/$@
 
 clean:
-	rm -f *.o *.elf
-	rm -f $(DISTDIR)/$(EXE)
+	rm -f *.o $(DISTDIR)/$(EXE).tns $(DISTDIR)/$(EXE).elf $(DISTDIR)/$(EXE).prg.tns

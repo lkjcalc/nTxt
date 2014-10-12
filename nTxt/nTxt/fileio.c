@@ -3,32 +3,6 @@
 #include "filebrowser.h"
 #include "actions.h"
 
-int get_last_doc(char* path){
-	FILE* file;
-	file = fopen("/documents/ntxt.last.tns","r");
-	if(file == NULL)
-		return 1;
-	fread(path,1,FILENAME_MAX,file);
-	fclose(file);
-	
-	printf("Last path: %s\n",path);
-	
-	return 0;
-}
-
-int set_last_doc(char* path){
-	FILE* file;
-	file = fopen("/documents/ntxt.last.tns","w");
-	if(file == NULL)
-		return 1;
-	fwrite(path,1,strlen(path)+1,file);
-	fclose(file);
-	
-	printf("Set last path: %s\n",path);
-	
-	return 0;
-}
-
 int open(uint8_t* scrbuf, char* path, char* savepath, char** textbufferp){
     FILE* file;
     char tmp[FILENAME_MAX];
@@ -59,8 +33,6 @@ int open(uint8_t* scrbuf, char* path, char* savepath, char** textbufferp){
     fread(*textbufferp, 1, filelen, file);
     fclose(file);
     (*textbufferp)[filelen] = '\0';
-	
-	set_last_doc(tmp);
     return 0;
 }
 
@@ -72,7 +44,6 @@ int save(uint8_t* scrbuf, char* path, char* savepath, char* textbuffer){
         file = fopen(savepath,"wb");
         fwrite(textbuffer,1,strlen(textbuffer),file);
         fclose(file);
-		set_last_doc(savepath);
         return 0;
     }
 }
@@ -98,6 +69,5 @@ int saveAs(uint8_t* scrbuf, char* path, char* savepath, char* textbuffer){
     file = fopen(savepath,"wb");
     fwrite(textbuffer,1,strlen(textbuffer),file);
     fclose(file);
-	set_last_doc(savepath);
     return 0;
 }

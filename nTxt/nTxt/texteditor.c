@@ -107,9 +107,7 @@ int main(int argc, char* argv[]){
     int softnewline = 0;
 
     char* searchstr = NULL;
-	
-	char tmp[FILENAME_MAX];
-	
+
     //if opened through file association
     if(argc >= 2){
         if(silent_open_action(argv[1], savepath, &textbuffer) == 1){
@@ -118,16 +116,6 @@ int main(int argc, char* argv[]){
             return 1;
         }
     }
-	
-	//try to open last document
-	else if(get_last_doc(tmp) == 0 && show_msgbox_2b("nTxt",tmp,"Open last","Create new") == 1){
-		if(silent_open_action(tmp, savepath, &textbuffer) == 1){
-            free(textbuffer);
-            free(scrbuf);
-            return 1;
-        }
-	}
-	wait_no_key_pressed();
 
     if(history_init(HISTORY_SIZE) == 1){
         free(textbuffer);
@@ -416,7 +404,7 @@ int main(int argc, char* argv[]){
             int i;
             int oldpos = pos;
             if(softnewline == TRUE){
-                int w = _getw(textbuffer, pos);
+                int w = getw(textbuffer, pos);
                 for(i = 0; i < SCREEN_HEIGHT / CHAR_HEIGHT; i++)
                     pos = prevline(textbuffer, pos);
                 pos = gotow(textbuffer, pos, w);
@@ -442,7 +430,7 @@ int main(int argc, char* argv[]){
             int i;
             int oldpos = pos;
             if(softnewline == TRUE){
-                int w = _getw(textbuffer, pos);
+                int w = getw(textbuffer, pos);
                 for(i = 0; i < SCREEN_HEIGHT / CHAR_HEIGHT; i++)
                     pos = nextline(textbuffer, pos);
                 pos = gotow(textbuffer, pos, w);
@@ -550,14 +538,14 @@ int main(int argc, char* argv[]){
                     delaycounter = DELAY_AFTER;
                 blockkey = arrowbuf;
                 if(arrowbuf == ARROW_RIGHT_NUM){
-                    if(pos < (int)strlen(textbuffer)){
+                    if(pos < strlen(textbuffer)){
                         if(textbuffer[pos] == '\n'){
                             cursorscreenrow++;
                             cursorscreencol = 0;
                         }
                         else if(textbuffer[pos] == '\t'){
                             if(softnewline == TRUE)
-                                cursorscreencol += TAB_WIDTH - _getw(textbuffer, pos) % TAB_WIDTH;
+                                cursorscreencol += TAB_WIDTH - getw(textbuffer, pos) % TAB_WIDTH;
                             else
                                 cursorscreencol += TAB_WIDTH - getw_nosoftbreak(textbuffer, pos) % TAB_WIDTH;
                         }
@@ -576,7 +564,7 @@ int main(int argc, char* argv[]){
                         }
                         else if(textbuffer[pos] == '\t'){
                             if(softnewline == TRUE)
-                                cursorscreencol -= TAB_WIDTH - _getw(textbuffer, pos) % TAB_WIDTH;
+                                cursorscreencol -= TAB_WIDTH - getw(textbuffer, pos) % TAB_WIDTH;
                             else
                                 cursorscreencol -= TAB_WIDTH - getw_nosoftbreak(textbuffer, pos) % TAB_WIDTH;
                         }

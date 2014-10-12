@@ -165,7 +165,7 @@ int nextline_nosoftbreak(char* textbuffer, int pos){//if in last line, returns l
     return checkednextline_nosoftbreak(textbuffer, pos);
 }
 
-int _getw(char* textbuffer, int pos){//how many characters into the line is pos
+int getw(char* textbuffer, int pos){//how many characters into the line is pos
     int tmppos = currentline_nosoftbreak(textbuffer, pos);
     int w = 0;
     while(tmppos <= pos){
@@ -231,7 +231,7 @@ int gotow_nosoftbreak(char* textbuffer, int pos, int w){//returns position of ch
 }
 
 int go_down(char* textbuffer, int pos){
-    int w = _getw(textbuffer, pos);
+    int w = getw(textbuffer, pos);
     pos = nextline(textbuffer, pos);
     return gotow(textbuffer, pos, w);
 }
@@ -243,7 +243,7 @@ int go_down_nosoftbreak(char* textbuffer, int pos){
 }
 
 int go_up(char* textbuffer, int pos){
-    int w = _getw(textbuffer, pos);
+    int w = getw(textbuffer, pos);
     pos = prevline(textbuffer, pos);
     return gotow(textbuffer, pos, w);
 }
