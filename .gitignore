@@ -1,1 +1,3 @@
 *.o
+CMakeLists.txt
+.idea/*

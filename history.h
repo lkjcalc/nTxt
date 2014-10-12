@@ -1,11 +1,12 @@
 #ifndef _HISTORY_H_
 #define _HISTORY_H_
 
-typedef struct{
-    int is_insert;//1 if insert, 0 if delete
-    int pos;//start of the range to delete or location where to insert, respectively
-    int len;//length of the range to delete/insert
-    char* text;//pointer to a copy of the inserted/deleted text. NOT null terminated. will be freed internally, don't do anything with it after passing it to a push_action anymore
+typedef struct
+{
+    int is_insert;  // 1 if insert, 0 if delete
+    int pos;        // start of the range to delete or location where to insert, respectively
+    int len;        // length of the range to delete/insert
+    char* text;     // pointer to a copy of the inserted/deleted text. NOT null terminated. will be freed internally, don't do anything with it after passing it to a push_action anymore
 } action_t;
 
 //initialize internal pointers and memory
