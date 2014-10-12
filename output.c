@@ -5,41 +5,22 @@
 
 #define STR_SELECTION_COLOR (has_colors?0b011101111111111:0xA)
 
-inline void setPixelBuf_color(void* scrbuf, unsigned x, unsigned y, uint16_t color)
+static inline void setPixelBuf_color(void* scrbuf, unsigned x, unsigned y, uint16_t color)
 {
     if (x < SCREEN_WIDTH && y < SCREEN_HEIGHT) {
-        uint16_t* p = (uint16_t * )(scrbuf + (x << 1) + (y << 9) + (y << 7));
+        uint16_t* p = (uint16_t * )(scrbuf + 2 * x + 2 * SCREEN_WIDTH * y);
         *p = color;
     }
 }
 
-inline void setPixelBuf_grey(void* scrbuf, unsigned x, unsigned y, uint8_t color)
+static inline void setPixelBuf_grey(void* scrbuf, unsigned x, unsigned y, uint8_t color)
 {
     if (x < SCREEN_WIDTH && y < SCREEN_HEIGHT) {
-        uint8_t* p = (uint8_t*) scrbuf + (x >> 1) + (y << 7) + (y << 5);
+        uint8_t* p = (uint8_t*) scrbuf + 2 * x + SCREEN_WIDTH / 2 * y;
         if (x % 2)
             *p = (*p & 0xF0) | color;
         else
             *p = (*p & 0x0F) | color << 4;
-    }
-}
-
-inline void setPixelBuf(void* scrbuf, unsigned x, unsigned y, uint16_t color)
-{
-    if (x < SCREEN_WIDTH && y < SCREEN_HEIGHT) {
-        if (!has_colors) {
-            uint8_t* p = (uint8_t*) scrbuf + (x >> 1) + (y << 7) + (y << 5);
-            if (x % 2)
-                *p = (*p & 0xF0) | color;
-            else
-                *p = (*p & 0x0F) | color << 4;
-            //*p = (x % 2) ? ((*p & 0b11110000) | color) : ((*p & 0b00001111) | (color << 4));
-            //*p = (*p & (0b1111 << (x%2)*4)) | (color << (1 - (x%2))*4);
-        }
-        else {
-            uint16_t* p = (uint16_t * )(scrbuf + (x << 1) + (y << 9) + (y << 7)); //(x << 1) + (y << 9) + (y << 7);
-            *p = color;
-        }
     }
 }
 
@@ -119,7 +100,7 @@ void dispString(void* scrbuf, unsigned x, unsigned y, const char* message)
             col = 0;
             ++line;
         }
-        if (y + line * CHAR_HEIGHT >= SCREEN_HEIGHT)//damit nicht speicher hinter screenbuffer �berschrieben wird
+        if (y + line * CHAR_HEIGHT >= SCREEN_HEIGHT)
             break;
     }
 }
@@ -285,14 +266,26 @@ void dispCursor_nosoftbreak(void* scrbuf, int offset, char* displinep, int curso
 
 inline void dispHorizLine(void* scrbuf, int x, int y, int l, int color)
 {
-    while (l--)
-        setPixelBuf(scrbuf, x++, y, color);
+    if (has_colors) {
+        while (l--)
+            setPixelBuf_color(scrbuf, x++, y, color);
+    }
+    else{
+        while (l--)
+            setPixelBuf_grey(scrbuf, x++, y, color);
+    }
 }
 
 inline void dispVertLine(void* scrbuf, int x, int y, int l, int color)
 {
-    while (l--)
-        setPixelBuf(scrbuf, x, y++, color);
+    if (has_colors) {
+        while (l--)
+            setPixelBuf_color(scrbuf, x, y++, color);
+    }
+    else{
+        while (l--)
+            setPixelBuf_grey(scrbuf, x, y++, color);
+    }
 }
 
 void dispRect(void* scrbuf, int x, int y, int w, int h, int color)

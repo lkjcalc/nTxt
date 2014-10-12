@@ -54,18 +54,6 @@ void update_selection(int oldpos, int newpos, int* selectionstart, int* selectio
     }
 }
 
-char* strrstr(char* s1, char* s2)
-{
-    if (s2[0] == '\0')
-        return s1;
-    char* p = strstr(s1, s2);
-    if (p == NULL)
-        return NULL;
-    while (strstr(p + 1, s2) != NULL)
-        p = strstr(p + 1, s2);
-    return p;
-}
-
 inline int case_insensitive_chrcmp(char c1, char c2)
 {
     if ((c1 & 0x5F) >= 'A' && (c1 & 0x5F) <= 'Z')//if comparing letters, do it case-insensitively

@@ -96,8 +96,7 @@ inline int copy_action(char* textbuffer, int selectionstart, int selectionend)
     char type[] = CLIPBOARD_TYPE_TEXT;
     if (selectionstart != selectionend) {
         clipboard_open();
-        int16_t
-        ret = clipboard_set(textbuffer + selectionstart, selectionend - selectionstart, type);
+        int16_t ret = clipboard_set(textbuffer + selectionstart, selectionend - selectionstart, type);
         clipboard_close();
         if (ret == -1)
             return 1;

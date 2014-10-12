@@ -10,7 +10,7 @@ uint8_t readarrow();
 
 char readc();
 
-char* reads(uint8_t* scrbuf, int x, int y, char* str, int num); // unused ?
+//char* reads(uint8_t* scrbuf, int x, int y, char* str, int num);
 //int getch(); //custom syscall
 
 

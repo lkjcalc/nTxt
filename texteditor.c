@@ -16,56 +16,16 @@
 #define HISTORY_SIZE 100
 
 /*
-    v21:
-    - history zu einem nicht-globalen objekt machen, damit sie für tabs geeignet ist
-    - löschen der history bei schliessen an anderen ort
-    - alles auf tabs vorbereiten (d.h. schauen dass alles weiterhin funktioniert)
-        -> structs vorbereiten vl.
-    - tabs
+    TODO:
+    - integrate the clipboard syscalls to ndless, remove custom syscalls
+*/
 
-    v22:
-    - settings fenster (zb mit checkboxen)
-    - windows-style newline (\r \n) erkennen und optional benutzen (wahrscheinlich modus eines docs erkennen, alle ersetzen, beim speichern zurückschreiben)
-    - code cleanen
-    - letzte graphische glitches bei undo und redo wegmachen (zB "Der Baum ist ein Krueppel.", dann "genialer" vor Krueppel, dann alles undo, dann redo, bei genialer glitch)
-
-
-    wenn syscalls:
-    - custom syscalls durch echte ersetzen bei clipboard
-    - unicode
-    - verschieden grosse fonts
-    - sonderzeichenpopup
-    - usb
-
-    - disp wenn selections verbessern: nur ein fünftel so schnell wie ohne selections (vor verschiebung von has_colors halb so schnell, aber optim brachte nur *2 statt *5)
-    - speicher wird gehortet aber nicht gemerkt dass schon alloziert! bei löschen kein realloc und keine var die allozierten speicher sich merkt!
-        -> kein grosses problem weil speicher nur behalten nachdem nicht mehr nötig, kein leak
-        -> merken, wie viel speicher alloziert
-        -> komplett neues speichermanagement, das für tabs geeignet ist
-    - replace
-    - goto line
-    - cursorscreenfreie lösung? damit nicht probleme wie bei multilines
-    - gui improvements
-    - warnung falls an anderem ort im filesystem als in /documents/ -> weil absolute paths einfach zu erkennen
-    - bei esc nur meldung anzeigen falls änderung seit letztem speichern
-    - vlt. echten timer einsetzen für input stat zählervariablen -> kann schlafen bis etwas passiert (keypress)
-    - scrollbalken
-    - scrolling vl. mit swipen, oder so
-    - option zum automatischen einfügen von leerzeichen statt tabs
-    - ist editieren von files die '\0' enthalten nötig? würde nötig machen mem... statt str... und v.a. ____andere kontrolle der bufferlänge_____
-    - main übersichtlicher machen
-    - filebrowser optimieren: fps sinkt rapide mit anzahl einträgen im aktuellen verzeichnis (auf 20 bei 20 einträgen) und vl auch wenn oberste nicht sichtbar
-    - scrolling bei ctrl navigs konsistent mit os machen
-    - überdenken des auto-.txt anhängen
-    - line numbers
-    - syntax highlighting
-    - slowdown bei grossen dateien untersuchen (2MB ist halb so schnell wie normal gross, 4MB nochmal halb)
-    - irgendwie das management von cursorscreencol usw von anderer funktionalität trennen
-
+/*
     v23:
     - [Compu] Address some of Bisam's requests : asks if you want to open the last opened file or create a new one at program launch ; "%" bound to the flag key.
     - [Compu] Rewrote makefile
     - [Adriweb] Overall code reformatting and eliminate some warnings
+    - [lkj] Removed some unused things
 */
 
 /*
@@ -126,7 +86,7 @@ int main(int argc, char* argv[])
         }
     }
 
-        //try to open last document
+    //try to open last document
     else if (get_last_doc(tmp) == 0 && show_msgbox_2b("nTxt", tmp, "Open last", "Create new") == 1) {
         if (silent_open_action(tmp, savepath, &textbuffer) == 1) {
             free(textbuffer);
@@ -227,7 +187,7 @@ int main(int argc, char* argv[])
                 idle();
         }
 
-            //open document:
+        //open document:
         else if (isKeyPressed(KEY_NSPIRE_CTRL) && isKeyPressed(KEY_NSPIRE_O)) {
             history_free();
             if (history_init(HISTORY_SIZE) == 1) {
@@ -238,7 +198,7 @@ int main(int argc, char* argv[])
                 break;
         }
 
-            //save document:
+        //save document:
         else if (isKeyPressed(KEY_NSPIRE_CTRL) && isKeyPressed(KEY_NSPIRE_S))
             save_action(scrbuf, path, savepath, textbuffer);
 
