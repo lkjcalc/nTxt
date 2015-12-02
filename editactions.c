@@ -18,7 +18,7 @@ static unsigned clipboard_close_addrs[] = {0x104A1E28, 0x1048633C, 0x104834AC, 0
 #define CLIPBOARD_TYPE_TEXT "t\0e\0x\0t\0/\0p\0l\0a\0i\0n\0\0"
 
 
-inline int insert_range_action_unlogged(char** textbufferp, int pos, int len, char* ins)
+int insert_range_action_unlogged(char** textbufferp, int pos, int len, char* ins)
 {
     if (strlen(*textbufferp) % 1024 + len > 1023) { //allocate enough memory
         char* tmp = realloc(*textbufferp, strlen(*textbufferp) + len + 1024 - (strlen(*textbufferp) + len) % 1024);
@@ -31,7 +31,7 @@ inline int insert_range_action_unlogged(char** textbufferp, int pos, int len, ch
     return 0;
 }
 
-inline void remove_range_action_unlogged(char* textbuffer, int pos, int len)
+void remove_range_action_unlogged(char* textbuffer, int pos, int len)
 {
     if (textbuffer[pos + len] == '\0')
         textbuffer[pos] = '\0';
@@ -39,7 +39,7 @@ inline void remove_range_action_unlogged(char* textbuffer, int pos, int len)
         memmove(textbuffer + pos, textbuffer + pos + len, strlen(textbuffer) + 1 - (pos + len)); //move everything after the range (including null character)
 }
 
-inline int insert_range_action(char** textbufferp, int pos, int len, char* ins)
+int insert_range_action(char** textbufferp, int pos, int len, char* ins)
 {
     action_t action;
     action.is_insert = 1;
@@ -54,7 +54,7 @@ inline int insert_range_action(char** textbufferp, int pos, int len, char* ins)
     return insert_range_action_unlogged(textbufferp, pos, len, ins);
 }
 
-inline int remove_range_action(char* textbuffer, int pos, int len)
+int remove_range_action(char* textbuffer, int pos, int len)
 {
     action_t action;
     action.is_insert = 0;
@@ -71,7 +71,7 @@ inline int remove_range_action(char* textbuffer, int pos, int len)
 }
 
 
-inline int delete_action(char* textbuffer, int* pos, int* cursorscreenrow, int* cursorscreencol, int* selectionstart, int* selectionend, int softnewline)
+int delete_action(char* textbuffer, int* pos, int* cursorscreenrow, int* cursorscreencol, int* selectionstart, int* selectionend, int softnewline)
 {
     if (*pos == *selectionend) {
         if (softnewline)
@@ -91,7 +91,7 @@ inline int delete_action(char* textbuffer, int* pos, int* cursorscreenrow, int* 
     return 0;
 }
 
-inline int copy_action(char* textbuffer, int selectionstart, int selectionend)
+int copy_action(char* textbuffer, int selectionstart, int selectionend)
 {
     char type[] = CLIPBOARD_TYPE_TEXT;
     if (selectionstart != selectionend) {
@@ -104,7 +104,7 @@ inline int copy_action(char* textbuffer, int selectionstart, int selectionend)
     return 0;
 }
 
-inline int cut_action(char* textbuffer, int* pos, int* cursorscreenrow, int* cursorscreencol, int* selectionstart, int* selectionend, int softnewline)
+int cut_action(char* textbuffer, int* pos, int* cursorscreenrow, int* cursorscreencol, int* selectionstart, int* selectionend, int softnewline)
 {
     if (*selectionstart != *selectionend) {
         if (copy_action(textbuffer, *selectionstart, *selectionend) == 1)
@@ -115,7 +115,7 @@ inline int cut_action(char* textbuffer, int* pos, int* cursorscreenrow, int* cur
     return 0;
 }
 
-inline int paste_action(char** textbufferp, int* pos, int* cursorscreenrow, int* cursorscreencol, int* selectionstart, int* selectionend, int softnewline)
+int paste_action(char** textbufferp, int* pos, int* cursorscreenrow, int* cursorscreencol, int* selectionstart, int* selectionend, int softnewline)
 {
     char* clipboardcontent;
     char type[] = CLIPBOARD_TYPE_TEXT;

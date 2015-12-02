@@ -379,7 +379,7 @@ int main(int argc, char* argv[])
         }
 
         //pg up
-        if (isKeyPressed(KEY_NSPIRE_CTRL) && isKeyPressed(KEY_NSPIRE_9)) {
+        if ((isKeyPressed(KEY_NSPIRE_CTRL) && isKeyPressed(KEY_NSPIRE_9)) || isKeyPressed(KEY_NSPIRE_TRIG)) {
             int i;
             int oldpos = pos;
             if (softnewline == TRUE) {
@@ -400,12 +400,12 @@ int main(int argc, char* argv[])
                 }
             }
             update_selection(oldpos, pos, &selectionstart, &selectionend);
-            while (isKeyPressed(KEY_NSPIRE_9))
+            while (isKeyPressed(KEY_NSPIRE_9) || isKeyPressed(KEY_NSPIRE_TRIG))
                 idle();
         }
 
         //pg down
-        if (isKeyPressed(KEY_NSPIRE_CTRL) && isKeyPressed(KEY_NSPIRE_3)) {
+        if ((isKeyPressed(KEY_NSPIRE_CTRL) && isKeyPressed(KEY_NSPIRE_3)) || isKeyPressed(KEY_NSPIRE_SQU)) {
             int i;
             int oldpos = pos;
             if (softnewline == TRUE) {
@@ -426,9 +426,44 @@ int main(int argc, char* argv[])
                 }
             }
             update_selection(oldpos, pos, &selectionstart, &selectionend);
-            while (isKeyPressed(KEY_NSPIRE_3))
+            while (isKeyPressed(KEY_NSPIRE_3) || isKeyPressed(KEY_NSPIRE_SQU))
                 idle();
         }
+
+        //scroll left
+        if ((isKeyPressed(KEY_NSPIRE_CTRL) && isKeyPressed(KEY_NSPIRE_4)) || isKeyPressed(KEY_NSPIRE_eEXP)) {
+            if (softnewline == FALSE) {
+                pos = go_left_nosoftbreak(textbuffer, pos);
+                int w = getw_nosoftbreak(textbuffer, pos);
+                if(w <= SCREEN_WIDTH/CHAR_WIDTH)
+					cursorscreencol = w;
+            }
+            else {
+				pos = go_left(textbuffer, pos);
+				cursorscreencol = 0;
+			}
+			selectionstart = pos;
+			if (!isKeyPressed(KEY_NSPIRE_SHIFT))
+				selectionend = pos;
+			while (isKeyPressed(KEY_NSPIRE_4) || isKeyPressed(KEY_NSPIRE_eEXP))
+                idle();
+        }
+
+        //scroll right
+        if ((isKeyPressed(KEY_NSPIRE_CTRL) && isKeyPressed(KEY_NSPIRE_6)) || isKeyPressed(KEY_NSPIRE_TENX)) {
+            if (softnewline == FALSE) {
+                pos = go_right_nosoftbreak(textbuffer, pos);
+            }
+            else {
+				pos = go_right(textbuffer, pos);
+			}
+			selectionend = pos;
+			if (!isKeyPressed(KEY_NSPIRE_SHIFT))
+				selectionstart = pos;
+			while (isKeyPressed(KEY_NSPIRE_6) || isKeyPressed(KEY_NSPIRE_TENX))
+				idle();
+        }
+
 
         //home
         if (isKeyPressed(KEY_NSPIRE_CTRL) && isKeyPressed(KEY_NSPIRE_LEFT)) {

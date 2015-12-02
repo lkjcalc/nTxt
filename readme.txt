@@ -27,13 +27,15 @@ Ctrl+f		find
 Ctrl+g		find next
 Ctrl+Shift+g	find previous
 
-Ctrl+z      undo
-Ctrl+y      redo
+Ctrl+z		undo
+Ctrl+y		redo
 
 Ctrl+7		go to start of document
 Ctrl+1		go to end of document
-Ctrl+9		page up
-Ctrl+3		page down
+Ctrl+9 or Trig	page up
+Ctrl+3 or x^2	page down
+Ctrl+4 or e^x	page left
+Ctrl+6 or 10^x	page right
 
 Ctrl+left	go to beginning of current line ("home")
 Ctrl+right	go to end of current line ("end")
@@ -50,4 +52,4 @@ I am not responsible for any harm that this program causes.
 
 
 
-lkj, 18 April 2014
+lkj, 2 December 2015

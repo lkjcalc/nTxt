@@ -264,7 +264,7 @@ void dispCursor_nosoftbreak(void* scrbuf, int offset, char* displinep, int curso
     dispVertLine(scrbuf, cursorscreencol * CHAR_WIDTH, row * CHAR_HEIGHT, CHAR_HEIGHT, 0x0);
 }
 
-inline void dispHorizLine(void* scrbuf, int x, int y, int l, int color)
+void dispHorizLine(void* scrbuf, int x, int y, int l, int color)
 {
     if (has_colors) {
         while (l--)
@@ -276,7 +276,7 @@ inline void dispHorizLine(void* scrbuf, int x, int y, int l, int color)
     }
 }
 
-inline void dispVertLine(void* scrbuf, int x, int y, int l, int color)
+void dispVertLine(void* scrbuf, int x, int y, int l, int color)
 {
     if (has_colors) {
         while (l--)

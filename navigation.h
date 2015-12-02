@@ -6,11 +6,11 @@ int linenum(char* textbuffer, int pos);
 int softlinenum(char* textbuffer, int pos);
 
 
-inline int countsoftnewl(char* textbuffer);
+int countsoftnewl(char* textbuffer);
 
 int countsoftnewl_withinitialw(char* textbuffer, int initialw, int countlen);
 
-inline int countnewl(char* textbuffer);
+int countnewl(char* textbuffer);
 
 
 int prevline(char* textbuffer, int pos);
@@ -18,9 +18,9 @@ int prevline(char* textbuffer, int pos);
 int prevline_nosoftbreak(char* textbuffer, int pos);
 
 
-inline int currentline(char* textbuffer, int pos);
+int currentline(char* textbuffer, int pos);
 
-inline int currentline_nosoftbreak(const char* textbuffer, int pos);
+int currentline_nosoftbreak(const char* textbuffer, int pos);
 
 
 int checkednextline(char* textbuffer, int pos); //if in last line, returns 0
@@ -51,5 +51,15 @@ int go_up_nosoftbreak(char* textbuffer, int pos);
 int go_down(char* textbuffer, int pos);
 
 int go_down_nosoftbreak(char* textbuffer, int pos);
+
+
+int go_left(char* textbuffer, int pos);
+
+int go_left_nosoftbreak(char* textbuffer, int pos);
+
+
+int go_right(char* textbuffer, int pos);
+
+int go_right_nosoftbreak(char* textbuffer, int pos);
 
 #endif

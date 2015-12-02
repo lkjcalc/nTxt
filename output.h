@@ -28,9 +28,9 @@ void dispRect(void* scrbuf, int x, int y, int w, int h, int color);
 
 void filledRect(void* scrbuf, int x, int y, int w, int h, int color);
 
-inline void dispHorizLine(void* scrbuf, int x, int y, int l, int color);
+void dispHorizLine(void* scrbuf, int x, int y, int l, int color);
 
-inline void dispVertLine(void* scrbuf, int x, int y, int l, int color);
+void dispVertLine(void* scrbuf, int x, int y, int l, int color);
 
 void dispRect(void* scrbuf, int x, int y, int w, int h, int color);
 

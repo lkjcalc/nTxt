@@ -1,6 +1,9 @@
 #include <os.h>
 #include "navigation.h"
 #include "output.h"
+#include "utils.h"
+
+#define HORIZONTAL_SCROLL_WIDTH (SCREEN_WIDTH/CHAR_WIDTH)
 
 int linenum(char* textbuffer, int pos)
 {
@@ -29,7 +32,7 @@ int softlinenum(char* textbuffer, int pos)
 }
 
 
-inline int countsoftnewl(char* textbuffer)
+int countsoftnewl(char* textbuffer)
 { //returns number of lines textbuffer uses or SCREEN_HEIGHT/CHAR_HEIGHT - 1 if the whole screen is used
     int pos = 0, line = 0;
     for (; (pos = checkednextline(textbuffer, pos)) != 0 && line < SCREEN_HEIGHT / CHAR_HEIGHT - 1; line++);
@@ -57,7 +60,7 @@ int countsoftnewl_withinitialw(char* textbuffer, int initialw, int countlen)
     return line;
 }
 
-inline int countnewl(char* textbuffer)
+int countnewl(char* textbuffer)
 { //returns number of lines textbuffer uses in nosoftbreak mode or SCREEN_HEIGHT/CHAR_HEIGHT - 1 if the whole screen is used
     int pos = 0, line = 0;
     for (; (pos = checkednextline_nosoftbreak(textbuffer, pos)) != 0 && line < SCREEN_HEIGHT / CHAR_HEIGHT - 1; line++);
@@ -93,12 +96,12 @@ int getnum(char* textbuffer, int pos)
     return num;
 }
 
-inline int currentline(char* textbuffer, int pos)
+int currentline(char* textbuffer, int pos)
 {
     return pos - getnum(textbuffer, pos);
 }
 
-inline int currentline_nosoftbreak(const char* textbuffer, int pos)
+int currentline_nosoftbreak(const char* textbuffer, int pos)
 {
     pos--;
     while (pos >= 0 && textbuffer[pos] != '\n')
@@ -222,6 +225,7 @@ int gotow(char* textbuffer, int pos, int w)
 { //returns position of char at width w of the current line
     pos = currentline(textbuffer, pos);
     int tmpw;
+    w = min(w, SCREEN_WIDTH/CHAR_WIDTH-1);
     for (tmpw = 0; tmpw < w; pos++) {
         if (textbuffer[pos] == '\n' || textbuffer[pos] == '\0')
             break;
@@ -273,5 +277,33 @@ int go_up_nosoftbreak(char* textbuffer, int pos)
 {
     int w = getw_nosoftbreak(textbuffer, pos);
     pos = prevline_nosoftbreak(textbuffer, pos);
+    return gotow_nosoftbreak(textbuffer, pos, w);
+}
+
+int go_left(char* textbuffer, int pos)
+{
+    int w = _getw(textbuffer, pos);
+    w = max(0, w-HORIZONTAL_SCROLL_WIDTH);
+    return gotow(textbuffer, pos, w);
+}
+
+int go_left_nosoftbreak(char* textbuffer, int pos)
+{
+    int w = getw_nosoftbreak(textbuffer, pos);
+    w = max(0, w-HORIZONTAL_SCROLL_WIDTH);
+    return gotow_nosoftbreak(textbuffer, pos, w);
+}
+
+int go_right(char* textbuffer, int pos)
+{
+    int w = _getw(textbuffer, pos);
+    w += HORIZONTAL_SCROLL_WIDTH;
+    return gotow(textbuffer, pos, w);
+}
+
+int go_right_nosoftbreak(char* textbuffer, int pos)
+{
+    int w = getw_nosoftbreak(textbuffer, pos);
+    w += HORIZONTAL_SCROLL_WIDTH;
     return gotow_nosoftbreak(textbuffer, pos, w);
 }

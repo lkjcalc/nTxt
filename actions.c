@@ -2,7 +2,7 @@
 #include "actions.h"
 #include "fileio.h"
 
-inline int save_on_close_action(void* scrbuf, char* path, char* savepath, char* textbuffer)
+int save_on_close_action(void* scrbuf, char* path, char* savepath, char* textbuffer)
 { //returns 0 if closing is cancelled, 1 otherwise
     FILE* file;
     wait_no_key_pressed();
@@ -23,7 +23,7 @@ inline int save_on_close_action(void* scrbuf, char* path, char* savepath, char* 
     return 0;
 }
 
-inline int open_action(void* scrbuf, char* path, char* savepath, char** textbufferp, int* selectionstart, int* selectionend, int* pos, int* cursorscreenrow, int* cursorscreencol)
+int open_action(void* scrbuf, char* path, char* savepath, char** textbufferp, int* selectionstart, int* selectionend, int* pos, int* cursorscreenrow, int* cursorscreencol)
 {
     int ret;
     ret = open(scrbuf, path, savepath, textbufferp);
@@ -44,7 +44,7 @@ inline int open_action(void* scrbuf, char* path, char* savepath, char** textbuff
     return 0;
 }
 
-inline int silent_open_action(char* file, char* savepath, char** textbufferp)
+int silent_open_action(char* file, char* savepath, char** textbufferp)
 {
     strcpy(savepath, file);
     FILE* f = fopen(savepath, "rb");
@@ -64,7 +64,7 @@ inline int silent_open_action(char* file, char* savepath, char** textbufferp)
     return 0;
 }
 
-inline void save_action(void* scrbuf, char* path, char* savepath, char* textbuffer)
+void save_action(void* scrbuf, char* path, char* savepath, char* textbuffer)
 {
     if (save(scrbuf, path, savepath, textbuffer) == 1) {
         wait_no_key_pressed();
@@ -73,7 +73,7 @@ inline void save_action(void* scrbuf, char* path, char* savepath, char* textbuff
     wait_no_key_pressed();
 }
 
-inline void saveAs_action(void* scrbuf, char* path, char* savepath, char* textbuffer)
+void saveAs_action(void* scrbuf, char* path, char* savepath, char* textbuffer)
 {
     if (saveAs(scrbuf, path, savepath, textbuffer) == 1) {
         wait_no_key_pressed();
@@ -82,7 +82,7 @@ inline void saveAs_action(void* scrbuf, char* path, char* savepath, char* textbu
     wait_no_key_pressed();
 }
 
-inline void change_line_wrapping_mode_action(int* softnewline, int* pos, int* cursorscreenrow, int* cursorscreencol, int* selectionstart, int* selectionend)
+void change_line_wrapping_mode_action(int* softnewline, int* pos, int* cursorscreenrow, int* cursorscreencol, int* selectionstart, int* selectionend)
 {
     *softnewline = !(*softnewline);
     *pos = 0;
