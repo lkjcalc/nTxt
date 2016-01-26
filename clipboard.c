@@ -7,9 +7,9 @@ static const unsigned clipboard_get_addrs[] = {0x104A1B94, 0x104860A8, //Classic
                                                0, 0, //CM 3.1
                                                0x1058ABCC, 0x1056F3F8, //Classic 3.6
                                                0x1056C814, 0x1056D2AC, //CX 3.6
-                                               0, 0, //Classic 3.9.0
+                                               0x10591E04, 0x10576130, //Classic 3.9.0
                                                0, 0, //Classic 3.9.1
-                                               0, 0, //CX 3.9.0
+                                               0x1057395C, 0x10573E64, //CX 3.9.0
                                                0, 0, //CX 3.9.1
                                                0, 0, //CX 4.0.0
                                                0x10581C28, 0x10582194 //CX 4.0.3
@@ -22,9 +22,9 @@ static const unsigned clipboard_add_addrs[] = {0x104A1E38, 0x1048634C, //Classic
                                                0, 0, //CM 3.1
                                                0x1058AE58, 0x1056F684, //Classic 3.6
                                                0x1056CAA0, 0x1056D538, //CX 3.6
-                                               0, 0, //Classic 3.9.0
+                                               0x10592080, 0x105763AC, //Classic 3.9.0
                                                0, 0, //Classic 3.9.1
-                                               0, 0, //CX 3.9.0
+                                               0x10573BD8, 0x105740E0, //CX 3.9.0
                                                0, 0, //CX 3.9.1
                                                0, 0, //CX 4.0.0
                                                0x10581EA4, 0x10582410 //CX 4.0.3
@@ -37,9 +37,9 @@ static const unsigned clipboard_reset_addrs[] = {0x104A1EE4, 0x104863F8, //Class
                                                  0, 0, //CM 3.1
                                                  0x1058AF34, 0x1056F760, //Classic 3.6
                                                  0x1056CB7C, 0x1056D614, //CX 3.6
-                                                 0, 0, //Classic 3.9.0
+                                                 0x1059215C, 0x10576488, //Classic 3.9.0
                                                  0, 0, //Classic 3.9.1
-                                                 0, 0, //CX 3.9.0
+                                                 0x10573CB4, 0x105741BC, //CX 3.9.0
                                                  0, 0, //CX 3.9.1
                                                  0, 0, //CX 4.0.0
                                                  0x10581F80, 0x105824EC //CX 4.0.3
