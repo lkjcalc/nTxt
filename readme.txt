@@ -41,6 +41,33 @@ Ctrl+left	go to beginning of current line ("home")
 Ctrl+right	go to end of current line ("end")
 
 
+Special characters
+------------------
+char    key(s)
+
+:       shift .
+;       shift ,
+!       shift ?!
+?       ?!
+&       shift +
+_       shift -
+~       ctrl -
+*       multiply
+\       shift divide
+|       ctrl divide
+/       divide
+"       shift exponentiate
+'       ctrl exponentiate
+^       exponentiate
+>       shift =
+<       ctrl =
+[       shift (
+{       ctrl (
+]       shift )
+}       ctrl )
+%       flag
+
+
 To switch the text wrapping mode (automatical new lines or horizontal scrolling),
 chose "Change Text Wrapping Mode" in the menu.
 
