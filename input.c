@@ -100,8 +100,14 @@ char readc()
         return isKeyPressed(KEY_NSPIRE_SHIFT) ? ':' : '.';
     if (isKeyPressed(KEY_NSPIRE_COLON))
         return ':';
-    if (isKeyPressed(KEY_NSPIRE_COMMA))
-        return isKeyPressed(KEY_NSPIRE_SHIFT) ? ';' : ',';
+    if (isKeyPressed(KEY_NSPIRE_COMMA)){
+		if (isKeyPressed(KEY_NSPIRE_SHIFT))
+			return ';';
+		if (isKeyPressed(KEY_NSPIRE_CTRL))
+			return '`';
+		else
+			return ',';
+	}
     if (isKeyPressed(KEY_NSPIRE_QUESEXCL) || isKeyPressed(KEY_NSPIRE_QUES))
         return isKeyPressed(KEY_NSPIRE_SHIFT) ? '!' : '?';
     if (isKeyPressed(KEY_NSPIRE_PLUS))
@@ -115,7 +121,7 @@ char readc()
             return '-';
     }
     if (isKeyPressed(KEY_NSPIRE_MULTIPLY))
-        return '*';
+        return isKeyPressed(KEY_NSPIRE_SHIFT) ? '#' : '*';
     if (isKeyPressed(KEY_NSPIRE_DIVIDE)) {
         if (isKeyPressed(KEY_NSPIRE_SHIFT))
             return '\\';
@@ -167,6 +173,10 @@ char readc()
             return ')';
     }
     if (isKeyPressed(KEY_NSPIRE_FLAG)) {
+		if (isKeyPressed(KEY_NSPIRE_SHIFT))
+			return '$';
+		if (isKeyPressed(KEY_NSPIRE_CTRL))
+			return '@';
         return '%';
     }
     return '\0';

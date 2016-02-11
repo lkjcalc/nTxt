@@ -9,6 +9,7 @@ File Association is supported, nTxt registers itself automatically on first star
 
 
 Controls:
+---------
 
 Arrow keys	move cursor
 Shift+arrows	select text
@@ -41,18 +42,20 @@ Ctrl+left	go to beginning of current line ("home")
 Ctrl+right	go to end of current line ("end")
 
 
-Special characters
+Special characters:
 ------------------
 char    key(s)
 
 :       shift .
 ;       shift ,
+`       ctrl ,
 !       shift ?!
 ?       ?!
 &       shift +
 _       shift -
 ~       ctrl -
 *       multiply
+#       shift multiply
 \       shift divide
 |       ctrl divide
 /       divide
@@ -66,6 +69,8 @@ _       shift -
 ]       shift )
 }       ctrl )
 %       flag
+$       shift flag
+@       ctrl flag
 
 
 To switch the text wrapping mode (automatical new lines or horizontal scrolling),
@@ -81,4 +86,4 @@ I am not responsible for any harm that this program causes.
 
 
 
-lkj, 1 February 2016
+lkj, 11 February 2016
