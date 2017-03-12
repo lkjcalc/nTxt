@@ -13,7 +13,8 @@ static const unsigned clipboard_get_addrs[] = {0x104A1B94, 0x104860A8, //Classic
                                                0, 0, //CX 3.9.1
                                                0, 0, //CX 4.0.0
                                                0x10581C28, 0x10582194, //CX 4.0.3
-                                               0x10596AF0, 0x1059709C //CX 4.2
+                                               0x10596AF0, 0x1059709C, //CX 4.2
+                                               0x105A73E4, 0x105A7988 //CX 4.4
                                               };
 #define os_clipboard_get SYSCALL_CUSTOM(clipboard_get_addrs, int, char**, const char*)
 
@@ -29,7 +30,8 @@ static const unsigned clipboard_add_addrs[] = {0x104A1E38, 0x1048634C, //Classic
                                                0, 0, //CX 3.9.1
                                                0, 0, //CX 4.0.0
                                                0x10581EA4, 0x10582410, //CX 4.0.3
-                                               0x10596D6C, 0x10597318 //CX 4.2
+                                               0x10596D6C, 0x10597318, //CX 4.2
+                                               0x105A7660, 0x105A7C04 //CX 4.4
                                               };
 #define os_clipboard_add SYSCALL_CUSTOM(clipboard_add_addrs, int, const char*, int, const char*)
 
@@ -45,7 +47,8 @@ static const unsigned clipboard_reset_addrs[] = {0x104A1EE4, 0x104863F8, //Class
                                                  0, 0, //CX 3.9.1
                                                  0, 0, //CX 4.0.0
                                                  0x10581F80, 0x105824EC, //CX 4.0.3
-                                                 0x10596E48, 0x105973F4 //CX 4.2
+                                                 0x10596E48, 0x105973F4, //CX 4.2
+                                                 0x105A773C, 0x105A7CE0 //CX 4.4
                                                 };
 #define os_clipboard_reset SYSCALL_CUSTOM(clipboard_reset_addrs, int, void)
 
