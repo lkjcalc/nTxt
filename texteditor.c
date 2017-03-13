@@ -1,3 +1,4 @@
+#define OLD_SCREEN_API //makes old code compile
 #include <os.h>
 #include "input.h"
 #include "output.h"

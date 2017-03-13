@@ -2,7 +2,7 @@ nTxt - Nspire Text Editor
 =========================
 
 nTxt is a text editor for the Nspire calculator series.
-It is compatible with ndless3.1 r872 or higher, ndless3.6, ndless3.9, ndless4.0,
+It is compatible with ndless3.1 r872 or higher, ndless3.6, ndless3.9, ndless4.0, ndless4.2, ndless4.4,
 both clickpad/touchpad and CX Nspires.
 
 File Association is supported, nTxt registers itself automatically on first start for .txt files.
@@ -77,13 +77,7 @@ To switch the text wrapping mode (automatical new lines or horizontal scrolling)
 chose "Change Text Wrapping Mode" in the menu.
 
 
-The source code is also available on github (https://github.com/lkjcalc/nTxt).
+The source code is available on github (https://github.com/lkjcalc/nTxt).
 
-
-Disclaimer:
-
-I am not responsible for any harm that this program causes.
-
-
-
-lkj, 11 February 2016
+~~~
+lkj, 13 March 2017
