@@ -54,7 +54,7 @@ void update_selection(int oldpos, int newpos, int* selectionstart, int* selectio
     }
 }
 
-inline int case_insensitive_chrcmp(char c1, char c2)
+static inline int case_insensitive_chrcmp(char c1, char c2)
 {
     if ((c1 & 0x5F) >= 'A' && (c1 & 0x5F) <= 'Z')//if comparing letters, do it case-insensitively
         return (c1 & 0x5F) - (c2 & 0x5F);
