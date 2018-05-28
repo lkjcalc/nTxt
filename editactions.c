@@ -80,9 +80,9 @@ int delete_action(char* textbuffer, int* pos, int* cursorscreenrow, int* cursors
 int copy_action(char* textbuffer, int selectionstart, int selectionend)
 {
     if (selectionstart == selectionend) 
-		return 0;
-	if (clipboard_settext(textbuffer + selectionstart, selectionend - selectionstart) != 0)
-		return 1;
+        return 0;
+    if (clipboard_settext(textbuffer + selectionstart, selectionend - selectionstart) != 0)
+        return 1;
     return 0;
 }
 
@@ -102,7 +102,7 @@ int paste_action(char** textbufferp, int* pos, int* cursorscreenrow, int* cursor
     char* clipboardcontent;
     int clipboardlength;
     if (clipboard_gettext(&clipboardcontent, &clipboardlength) != 0)
-		return 1;
+        return 1;
     char restore;
     if (clipboardlength > 0) {
         if (*selectionstart != *selectionend) {

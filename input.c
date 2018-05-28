@@ -101,13 +101,13 @@ char readc()
     if (isKeyPressed(KEY_NSPIRE_COLON))
         return ':';
     if (isKeyPressed(KEY_NSPIRE_COMMA)){
-		if (isKeyPressed(KEY_NSPIRE_SHIFT))
-			return ';';
-		if (isKeyPressed(KEY_NSPIRE_CTRL))
-			return '`';
-		else
-			return ',';
-	}
+        if (isKeyPressed(KEY_NSPIRE_SHIFT))
+            return ';';
+        if (isKeyPressed(KEY_NSPIRE_CTRL))
+            return '`';
+        else
+            return ',';
+    }
     if (isKeyPressed(KEY_NSPIRE_QUESEXCL) || isKeyPressed(KEY_NSPIRE_QUES))
         return isKeyPressed(KEY_NSPIRE_SHIFT) ? '!' : '?';
     if (isKeyPressed(KEY_NSPIRE_PLUS))
@@ -173,62 +173,11 @@ char readc()
             return ')';
     }
     if (isKeyPressed(KEY_NSPIRE_FLAG)) {
-		if (isKeyPressed(KEY_NSPIRE_SHIFT))
-			return '$';
-		if (isKeyPressed(KEY_NSPIRE_CTRL))
-			return '@';
+        if (isKeyPressed(KEY_NSPIRE_SHIFT))
+            return '$';
+        if (isKeyPressed(KEY_NSPIRE_CTRL))
+            return '@';
         return '%';
     }
     return '\0';
 }
-
-//Ersatz fuer reads: show_msg_user_input(...) aus libndls
-/*char* reads(uint8_t* scrbuf, int x, int y, char* str, int num){
-    int i = 0;
-    char tmp;
-    if(num < 0)
-        return str;
-    while((i<num - 1) && !isKeyPressed(KEY_NSPIRE_ESC)){
-        tmp = readc();
-        if(!isKeyPressed(KEY_NSPIRE_ENTER) && !isKeyPressed(KEY_NSPIRE_ESC) && !isKeyPressed(KEY_NSPIRE_DEL))//so these keys work but others are only read once
-            wait_no_key_pressed();
-        if(isKeyPressed(KEY_NSPIRE_DEL) && (i > 0)){
-            str[--i] = '\0';
-            tmp = 0;
-            wait_no_key_pressed();
-        }
-        if(isKeyPressed(KEY_NSPIRE_ENTER)){
-            str[i] = '\0';
-            return str;
-        }
-        if(tmp != 0){
-            str[i] = tmp;
-            i++;
-        }
-        putChar(scrbuf, x + i * CHAR_WIDTH, y, ' ');
-        dispString(scrbuf, x, y, str);
-        memcpy(SCREEN_BASE_ADDRESS, scrbuf, SCREEN_BYTES_SIZE);
-    }
-    str[i] = '\0';
-    return str;
-}*/
-/*struct event {
-    unsigned int timestamp;
-    unsigned short type;
-    unsigned short ascii;
-    unsigned int key;
-    unsigned int unknown[3];
-    unsigned int control;
-};
-
-static const unsigned get_event_addrs[] = {0x1016C354, 0x1016e36c, 0x101b2724, 0x101b2fec};  //OS 1.7 ,OS2.0.1.60
-#define get_event SYSCALL_CUSTOM(get_event_addrs, int,  struct event *)
-
-int getch() {
-    struct event event;
-    do {
-        get_event(&event);
-    } while (event.type != 8 || event.ascii == 0);
-    return event.ascii;
-}
-*/
