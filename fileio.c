@@ -44,7 +44,7 @@ int open(uint8_t* scrbuf, char* path, char* savepath, char** textbufferp)
     file = fopen(tmp, "rb");
     if (file == NULL) {
         wait_no_key_pressed();
-        show_msgbox("", "This file doesn't exist!");
+        ntxt_show_msgbox("", "This file doesn't exist!");
         return 1;
     }
     strcpy(savepath, tmp);
@@ -93,11 +93,11 @@ int saveAs(uint8_t* scrbuf, char* path, char* savepath, char* textbuffer)
     file = fopen(savepath, "r");
     if (file != NULL) {
         fclose(file);
-        if (show_msgbox_2b("Save As", "This file already exists! Do you really want to overwrite it?", "Yes", "No") == 2)
+        if (ntxt_show_msgbox_2b("Save As", "This file already exists! Do you really want to overwrite it?", "Yes", "No") == 2)
             return 1;
     }
     if (strstr(savepath, ".tns") != strrchr(savepath, '\0') - 4) {
-        if (show_msgbox_2b("No filename extensinon .tns", "Append .tns to the path? Else the file won't be visible in the My Documents screen.", "Yes", "No") == 1)
+        if (ntxt_show_msgbox_2b("No filename extensinon .tns", "Append .tns to the path? Else the file won't be visible in the My Documents screen.", "Yes", "No") == 1)
             strcat(savepath, ".tns");
     }
     file = fopen(savepath, "wb");

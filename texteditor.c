@@ -1,4 +1,3 @@
-#define OLD_SCREEN_API //makes old code compile
 #include <os.h>
 #include "input.h"
 #include "output.h"
@@ -88,7 +87,7 @@ int main(int argc, char* argv[])
     }
 
     //try to open last document
-    else if (get_last_doc(tmp) == 0 && show_msgbox_2b("nTxt", tmp, "Open last", "Create new") == 1) {
+    else if (get_last_doc(tmp) == 0 && ntxt_show_msgbox_2b("nTxt", tmp, "Open last", "Create new") == 1) {
         if (silent_open_action(tmp, savepath, &textbuffer) == 1) {
             free(textbuffer);
             freeScrbuf(scrbuf);
@@ -239,7 +238,7 @@ int main(int argc, char* argv[])
             char* search_txt_input;
             char* foundat;
             wait_no_key_pressed();
-            inputlen = show_msg_user_input("Find", "Text to search for", "", &search_txt_input);
+            inputlen = ntxt_show_msg_user_input("Find", "Text to search for", "", &search_txt_input);
             if (inputlen != -1) {
                 free(searchstr);
                 searchstr = (char*) malloc(strlen(search_txt_input) + 1);
@@ -261,7 +260,7 @@ int main(int argc, char* argv[])
                         cursorscreencol = SCREEN_WIDTH / CHAR_WIDTH / 2;
                 }
                 else
-                    show_msgbox("", "Not found");
+                    ntxt_show_msgbox("", "Not found");
             }
             wait_no_key_pressed();
         }
@@ -271,11 +270,11 @@ int main(int argc, char* argv[])
             if (searchstr != NULL) {
                 char* tmp = case_insensitive_strstr(textbuffer + pos, searchstr);
                 if (tmp == NULL) {
-                    show_msgbox("", "Reached the end of the document");
+                    ntxt_show_msgbox("", "Reached the end of the document");
                     tmp = case_insensitive_strstr(textbuffer, searchstr);
                 }
                 if (tmp == NULL)
-                    show_msgbox("", "Not found in document");
+                    ntxt_show_msgbox("", "Not found in document");
                 else {
                     selectionstart = tmp - textbuffer;
                     selectionend = selectionstart + strlen(searchstr);
@@ -300,11 +299,11 @@ int main(int argc, char* argv[])
                 textbuffer[selectionstart] = restore;
                 if (tmp == NULL) {
                     wait_no_key_pressed();
-                    show_msgbox("", "Reached the start of the document");
-                    tmp = case_insensitive_strrstr(textbuffer, searchstr); //find last occurence in whole text
+                    ntxt_show_msgbox("", "Reached the start of the document");
+                    tmp = case_insensitive_strrstr(textbuffer, searchstr);  // find last occurence in whole text
                 }
                 if (tmp == NULL)
-                    show_msgbox("", "Not found in document");
+                    ntxt_show_msgbox("", "Not found in document");
                 else {
                     selectionstart = tmp - textbuffer;
                     selectionend = selectionstart + strlen(searchstr);
@@ -483,7 +482,7 @@ int main(int argc, char* argv[])
         //end
         if (isKeyPressed(KEY_NSPIRE_CTRL) && isKeyPressed(KEY_NSPIRE_RIGHT)) {
             if (softnewline) {
-                if ((pos = checkednextline(textbuffer, pos) - 1) == -1)//if in last line
+                if ((pos = checkednextline(textbuffer, pos) - 1) == -1)  // if in last line
                     pos = strlen(textbuffer);
                 //uncomment if you want cursor before first char of next line instead of before last char of current line:
                 //else if(textbuffer[pos] != '\n')
@@ -503,8 +502,8 @@ int main(int argc, char* argv[])
 
         //input(first:alphanum/newline/tab/del, second:arrow keys):
         inpbuf = readc();
-        if (inpbuf != '\0' && (inpbuf != blockkey || !delaycounter)) { //if key hasn't been released and repeated keypress delay isn't over, ignore keypress
-            if (inpbuf != blockkey)//if they're the same, this means the key has been hold down and is now read for the 2nd time, so use a shorter delay
+        if (inpbuf != '\0' && (inpbuf != blockkey || !delaycounter)) {  // if key hasn't been released and repeated keypress delay isn't over, ignore keypress
+            if (inpbuf != blockkey) // if they're the same, this means the key has been hold down and is now read for the 2nd time, so use a shorter delay
                 delaycounter = DELAY_FIRST;
             else
                 delaycounter = DELAY_AFTER;
@@ -515,9 +514,9 @@ int main(int argc, char* argv[])
                     break;
                 }
             }
-            else if (inpbuf == '\b') { //else if because if there was a selection, it's already deleted -> do nothing more
+            else if (inpbuf == '\b') {  // else if because if there was a selection, it's already deleted -> do nothing more
                 if (strlen(textbuffer) != 0 && pos != 0) {
-                    selectionstart = pos - 1; //delete_action deletes the selection, so set it accordingly
+                    selectionstart = pos - 1;  // delete_action deletes the selection, so set it accordingly
                     selectionend = pos;
                     if (delete_action(textbuffer, &pos, &cursorscreenrow, &cursorscreencol, &selectionstart, &selectionend, softnewline) == 1) {
                         crashsave(textbuffer, path);
@@ -590,7 +589,7 @@ int main(int argc, char* argv[])
                 }
                 else if (arrowbuf == ARROW_UP_NUM) {
                     if (softnewline) {
-                        if (currentline(textbuffer, pos) != 0) { //if cursor not in first line of file
+                        if (currentline(textbuffer, pos) != 0) {  // if cursor not in first line of file
                             cursorscreenrow--;
                             update_selection(pos, go_up(textbuffer, pos), &selectionstart, &selectionend);
                             pos = go_up(textbuffer, pos);
@@ -607,14 +606,14 @@ int main(int argc, char* argv[])
                 }
                 else if (arrowbuf == ARROW_DOWN_NUM) {
                     if (softnewline) {
-                        if (checkednextline(textbuffer, pos) != 0) { //if cursor not in last line of file
+                        if (checkednextline(textbuffer, pos) != 0) {  // if cursor not in last line of file
                             cursorscreenrow++;
                             update_selection(pos, go_down(textbuffer, pos), &selectionstart, &selectionend);
                             pos = go_down(textbuffer, pos);
                         }
                     }
                     else {
-                        if (checkednextline_nosoftbreak(textbuffer, pos) != 0) { //if cursor not in last line of file
+                        if (checkednextline_nosoftbreak(textbuffer, pos) != 0) {  // if cursor not in last line of file
                             cursorscreenrow++;
                             update_selection(pos, go_down_nosoftbreak(textbuffer, pos), &selectionstart, &selectionend);
                             cursorscreencol -= getw_nosoftbreak(textbuffer, pos) - getw_nosoftbreak(textbuffer, go_down_nosoftbreak(textbuffer, pos));
@@ -626,7 +625,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        if (readc() == 0 && readarrow() == 0)//if no key pressed <==> if key released
+        if (readc() == 0 && readarrow() == 0)  // if no key pressed <==> if key released
             blockkey = 0;
         if (delaycounter)
             delaycounter--;
@@ -642,7 +641,7 @@ int main(int argc, char* argv[])
         if (cursorscreencol >= SCREEN_WIDTH / CHAR_WIDTH)
             cursorscreencol = SCREEN_WIDTH / CHAR_WIDTH - 1;
     }
-    free(searchstr); //note: free does nothing if nullpointer passed -> no check needed
+    free(searchstr);  // note: free does nothing if nullpointer passed -> no check needed
     free(textbuffer);
     freeScrbuf(scrbuf);
     history_free();

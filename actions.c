@@ -3,14 +3,14 @@
 #include "fileio.h"
 
 int save_on_close_action(void* scrbuf, char* path, char* savepath, char* textbuffer)
-{ //returns 0 if closing is cancelled, 1 otherwise
+{  // returns 0 if closing is cancelled, 1 otherwise
     FILE* file;
     wait_no_key_pressed();
-    unsigned inp = show_msgbox_3b("", "Save Document?", "Yes", "No", "Cancel");
+    unsigned inp = ntxt_show_msgbox_3b("", "Save Document?", "Yes", "No", "Cancel");
     if (inp == 1) {
         if (save(scrbuf, path, savepath, textbuffer) == 1) {
             file = fopen(strcat(path, "noname.txt.tns"), "ab");
-            *(strrchr(path, '/') + 1) = '\0'; //revert the strcat
+            *(strrchr(path, '/') + 1) = '\0';  // revert the strcat
             fwrite(textbuffer, 1, strlen(textbuffer), file);
             fclose(file);
         }
@@ -36,7 +36,7 @@ int open_action(void* scrbuf, char* path, char* savepath, char** textbufferp, in
     }
     else if (ret == -1) {
         wait_no_key_pressed();
-        show_msgbox("", "Couldn't open file!");
+        ntxt_show_msgbox("", "Couldn't open file!");
         wait_no_key_pressed();
         return 1;
     }
@@ -68,7 +68,7 @@ void save_action(void* scrbuf, char* path, char* savepath, char* textbuffer)
 {
     if (save(scrbuf, path, savepath, textbuffer) == 1) {
         wait_no_key_pressed();
-        show_msgbox("", "File wasn't saved!");
+        ntxt_show_msgbox("", "File wasn't saved!");
     }
     wait_no_key_pressed();
 }
@@ -77,7 +77,7 @@ void saveAs_action(void* scrbuf, char* path, char* savepath, char* textbuffer)
 {
     if (saveAs(scrbuf, path, savepath, textbuffer) == 1) {
         wait_no_key_pressed();
-        show_msgbox("", "File wasn't saved!");
+        ntxt_show_msgbox("", "File wasn't saved!");
     }
     wait_no_key_pressed();
 }
