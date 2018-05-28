@@ -39,12 +39,12 @@ int main(int argc, char* argv[])
     assert_ndless_rev(872);
     cfg_register_fileext("txt", "nTxt");
 
-    void* scrbuf = malloc(SCREEN_BYTES_SIZE);
+    void* scrbuf = initScrbuf();
     if (scrbuf == NULL) {
-        printf("malloc failed\n");
+        printf("initScrbuf failed\n");
         return 1;
     }
-    memset(scrbuf, 0xFF, SCREEN_BYTES_SIZE);
+    clearScreen(scrbuf);
 
     char path[FILENAME_MAX + 1];
     strcpy(path, argv[0]);
@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
     char* textbuffer = malloc(1024);
     if (textbuffer == NULL) {
         printf("malloc failed\n");
-        free(scrbuf);
+        freeScrbuf(scrbuf);
         return 1;
     }
     textbuffer[0] = '\0';
@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
     if (argc >= 2) {
         if (silent_open_action(argv[1], savepath, &textbuffer) == 1) {
             free(textbuffer);
-            free(scrbuf);
+            freeScrbuf(scrbuf);
             return 1;
         }
     }
@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
     else if (get_last_doc(tmp) == 0 && show_msgbox_2b("nTxt", tmp, "Open last", "Create new") == 1) {
         if (silent_open_action(tmp, savepath, &textbuffer) == 1) {
             free(textbuffer);
-            free(scrbuf);
+            freeScrbuf(scrbuf);
             return 1;
         }
     }
@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
 
     if (history_init(HISTORY_SIZE) == 1) {
         free(textbuffer);
-        free(scrbuf);
+        freeScrbuf(scrbuf);
         return 1;
     }
 
@@ -117,8 +117,8 @@ int main(int argc, char* argv[])
         sleep(10); //i.e. <= 100fps
 
         //disp
-        memcpy(SCREEN_BASE_ADDRESS, scrbuf, SCREEN_BYTES_SIZE);
-        memset(scrbuf, 0xFF, SCREEN_BYTES_SIZE);
+        showBuffer(scrbuf);
+        clearScreen(scrbuf);
 
         if (softnewline) {
             displinep = _getline(textbuffer, pos, cursorscreenrow);
@@ -437,16 +437,16 @@ int main(int argc, char* argv[])
                 pos = go_left_nosoftbreak(textbuffer, pos);
                 int w = getw_nosoftbreak(textbuffer, pos);
                 if(w <= SCREEN_WIDTH/CHAR_WIDTH)
-					cursorscreencol = w;
+                    cursorscreencol = w;
             }
             else {
-				pos = go_left(textbuffer, pos);
-				cursorscreencol = 0;
-			}
-			selectionstart = pos;
-			if (!isKeyPressed(KEY_NSPIRE_SHIFT))
-				selectionend = pos;
-			while (isKeyPressed(KEY_NSPIRE_4) || isKeyPressed(KEY_NSPIRE_eEXP))
+                pos = go_left(textbuffer, pos);
+                cursorscreencol = 0;
+            }
+            selectionstart = pos;
+            if (!isKeyPressed(KEY_NSPIRE_SHIFT))
+                selectionend = pos;
+            while (isKeyPressed(KEY_NSPIRE_4) || isKeyPressed(KEY_NSPIRE_eEXP))
                 idle();
         }
 
@@ -456,13 +456,13 @@ int main(int argc, char* argv[])
                 pos = go_right_nosoftbreak(textbuffer, pos);
             }
             else {
-				pos = go_right(textbuffer, pos);
-			}
-			selectionend = pos;
-			if (!isKeyPressed(KEY_NSPIRE_SHIFT))
-				selectionstart = pos;
-			while (isKeyPressed(KEY_NSPIRE_6) || isKeyPressed(KEY_NSPIRE_TENX))
-				idle();
+                pos = go_right(textbuffer, pos);
+            }
+            selectionend = pos;
+            if (!isKeyPressed(KEY_NSPIRE_SHIFT))
+                selectionstart = pos;
+            while (isKeyPressed(KEY_NSPIRE_6) || isKeyPressed(KEY_NSPIRE_TENX))
+                idle();
         }
 
 
@@ -644,7 +644,7 @@ int main(int argc, char* argv[])
     }
     free(searchstr); //note: free does nothing if nullpointer passed -> no check needed
     free(textbuffer);
-    free(scrbuf);
+    freeScrbuf(scrbuf);
     history_free();
     refresh_osscr();
     return 0;

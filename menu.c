@@ -1,12 +1,7 @@
-#define OLD_SCREEN_API //makes old code compile
 #include <os.h>
 #include "utils.h"
 #include "menu.h"
 #include "output.h"
-
-#define MENU_BACKGROUND_COLOR ( has_colors?0b1111111111111111:0xC )
-#define MENU_SHADOW_COLOR (has_colors?0b0111101111101111:0x5 )
-#define MENU_SELECTION_COLOR (has_colors?0b011101111111111:0x0)
 
 #define INPUTPAUSE 30
 
@@ -33,7 +28,7 @@ static int dispMenu(void* scrbuf, int x, int y, const char* entrylist[], int sel
     for (j = 0; j < i; j++, y += CHAR_HEIGHT + 4) {
         if (j == selected - 1) {
             filledRect(scrbuf, x + 1, y - 2, w, CHAR_HEIGHT + 4, MENU_SELECTION_COLOR);
-            dispStringColor(scrbuf, x + 3, y, entrylist[j], has_colors ? 0xFFFF : 0xF, MENU_SELECTION_COLOR);
+            dispStringColor(scrbuf, x + 3, y, entrylist[j], WHITE_COLOR, MENU_SELECTION_COLOR);
         }
         else
             dispString(scrbuf, x + 3, y, entrylist[j]);
@@ -54,7 +49,7 @@ int menu(void* scrbuf, const char* menuentries[])
         sleep(10); //results in around 63 fps
 
         lastitem = dispMenu(scrbuf, 0, 0, menuentries, selecteditem);
-        memcpy(SCREEN_BASE_ADDRESS, scrbuf, SCREEN_BYTES_SIZE);
+        showBuffer(scrbuf);
 
         //closing menu:
         if (isKeyPressed(KEY_NSPIRE_ESC) || on_key_pressed())

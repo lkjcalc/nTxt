@@ -1,9 +1,10 @@
+#define OLD_SCREEN_API //makes old code compile
+
 #include <os.h>
 #include "output.h"
 #include "navigation.h"
 #include "charmap_8x12.h"
 
-#define STR_SELECTION_COLOR (has_colors?0b011101111111111:0xA)
 
 static inline void setPixelBuf_color(void* scrbuf, unsigned x, unsigned y, uint16_t color)
 {
@@ -158,7 +159,7 @@ void dispStringWithSelection(void* scrbuf, unsigned x, unsigned y, char* message
         }
         else {
             if (i >= selectionstart && i < selectionend)
-                putCharColor(scrbuf, x + col * CHAR_WIDTH, y + line * CHAR_HEIGHT, message[i], has_colors ? 0xFFFF : 0xF, STR_SELECTION_COLOR);
+                putCharColor(scrbuf, x + col * CHAR_WIDTH, y + line * CHAR_HEIGHT, message[i], WHITE_COLOR, STR_SELECTION_COLOR);
             else
                 putChar(scrbuf, x + col * CHAR_WIDTH, y + line * CHAR_HEIGHT, message[i]);
             ++col;
@@ -210,7 +211,7 @@ void dispStringWithSelection_nosoftbreak(void* scrbuf, const char* textbuffer, i
             if (linelist[i][linepos] == '\t') {
                 if (poslist[i] + linepos >= selectionstart && poslist[i] + linepos < selectionend) {
                     do {
-                        putCharColor(scrbuf, (xoff + w) * CHAR_WIDTH, i * CHAR_HEIGHT, ' ', has_colors ? 0xFFFF : 0xF, STR_SELECTION_COLOR);
+                        putCharColor(scrbuf, (xoff + w) * CHAR_WIDTH, i * CHAR_HEIGHT, ' ', WHITE_COLOR, STR_SELECTION_COLOR);
                         w++;
                     } while ((w + coloffset + xoff) % TAB_WIDTH);
                 }
@@ -219,14 +220,14 @@ void dispStringWithSelection_nosoftbreak(void* scrbuf, const char* textbuffer, i
             }
             else {
                 if (poslist[i] + linepos >= selectionstart && poslist[i] + linepos < selectionend)
-                    putCharColor(scrbuf, (xoff + w) * CHAR_WIDTH, i * CHAR_HEIGHT, linelist[i][linepos], has_colors ? 0xFFFF : 0xF, STR_SELECTION_COLOR);
+                    putCharColor(scrbuf, (xoff + w) * CHAR_WIDTH, i * CHAR_HEIGHT, linelist[i][linepos], WHITE_COLOR, STR_SELECTION_COLOR);
                 else
                     putChar(scrbuf, (xoff + w) * CHAR_WIDTH, i * CHAR_HEIGHT, linelist[i][linepos]);
                 w++;
             }
         }
         if (linelist[i + 1] != 0 && poslist[i + 1] - 1 >= selectionstart && poslist[i + 1] - 1 < selectionend)//if newline char is selected, print a selected space
-            putCharColor(scrbuf, (xoff + w) * CHAR_WIDTH, i * CHAR_HEIGHT, ' ', has_colors ? 0xFFFF : 0xF, STR_SELECTION_COLOR);
+            putCharColor(scrbuf, (xoff + w) * CHAR_WIDTH, i * CHAR_HEIGHT, ' ', WHITE_COLOR, STR_SELECTION_COLOR);
         free(linelist[i]);
     }
 }
@@ -300,4 +301,24 @@ void filledRect(void* scrbuf, int x, int y, int w, int h, int color)
 {
     while (h--)
         dispHorizLine(scrbuf, x, y++, w, color);
+}
+
+void clearScreen(void* scrbuf)
+{
+    memset(scrbuf, 0xFF, SCREEN_BYTES_SIZE);
+}
+
+void showBuffer(void* scrbuf)
+{
+    memcpy(SCREEN_BASE_ADDRESS, scrbuf, SCREEN_BYTES_SIZE);
+}
+
+void* initScrbuf()
+{
+    return malloc(SCREEN_BYTES_SIZE);
+}
+
+void freeScrbuf(void* scrbuf)
+{
+    free(scrbuf);
 }

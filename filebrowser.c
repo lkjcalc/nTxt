@@ -1,4 +1,3 @@
-#define OLD_SCREEN_API //makes old code compile
 #include <os.h>
 #include <dirent.h>
 #include "filebrowser.h"
@@ -18,8 +17,6 @@
 #define FILENAME_WIDTH 240
 
 #define FILES_SHOWN ((FILENAMEINPUT_Y - DIRLIST_Y - FILENAMEINPUT_DIRLIST_DIST) / CHAR_HEIGHT)
-
-#define MENU_SELECTION_COLOR (has_colors?0b011101111111111:0x0)
 
 #define INPUTPAUSE 50
 
@@ -137,9 +134,9 @@ int filebrowser(void* scrbuf, char* file, char* title)
     wait_no_key_pressed();
     while (1) {
         //disp:
-        memset(scrbuf, 0xFF, SCREEN_BYTES_SIZE);
+        clearScreen(scrbuf);
         filledRect(scrbuf, 0, TITLE_Y, SCREEN_WIDTH, TITLE_HEIGHT, 0);
-        dispStringColor(scrbuf, 4, (TITLE_HEIGHT - CHAR_HEIGHT) / 2, title, has_colors ? 0xFFFF : 0xF, 0);
+        dispStringColor(scrbuf, 4, (TITLE_HEIGHT - CHAR_HEIGHT) / 2, title, WHITE_COLOR, 0);
         dispHorizLine(scrbuf, 0, DIR_Y + DIR_HEIGHT - 1, 320, 0);
         dispString(scrbuf, 4, DIR_Y + (DIR_HEIGHT - CHAR_HEIGHT) / 2, currentdir);
         dispHorizLine(scrbuf, 0, FILENAMEINPUT_Y, 320, 0);
@@ -162,15 +159,15 @@ int filebrowser(void* scrbuf, char* file, char* title)
             }
             else {
                 filledRect(scrbuf, CHAR_WIDTH * 3, DIRLIST_Y + (i - filescroll) * CHAR_HEIGHT - 1, SCREEN_WIDTH - CHAR_WIDTH * 4, CHAR_HEIGHT + 2, MENU_SELECTION_COLOR);
-                dispStringColor(scrbuf, CHAR_WIDTH * 3, DIRLIST_Y + (i - filescroll) * CHAR_HEIGHT, filenames[i], has_colors ? 0xFFFF : 0xF, MENU_SELECTION_COLOR);
+                dispStringColor(scrbuf, CHAR_WIDTH * 3, DIRLIST_Y + (i - filescroll) * CHAR_HEIGHT, filenames[i], WHITE_COLOR, MENU_SELECTION_COLOR);
                 if (!is_dir(filenames[i])) {
                     char size[16];
                     get_filesize(filenames[i], size);
-                    dispStringColor(scrbuf, FILENAME_WIDTH, DIRLIST_Y + (i - filescroll) * CHAR_HEIGHT, size, has_colors ? 0xFFFF : 0xF, MENU_SELECTION_COLOR);
+                    dispStringColor(scrbuf, FILENAME_WIDTH, DIRLIST_Y + (i - filescroll) * CHAR_HEIGHT, size, WHITE_COLOR, MENU_SELECTION_COLOR);
                 }
             }
         }
-        memcpy(SCREEN_BASE_ADDRESS, scrbuf, SCREEN_BYTES_SIZE);
+        showBuffer(scrbuf);
 
 
         //input

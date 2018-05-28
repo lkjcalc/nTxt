@@ -6,6 +6,13 @@
 
 #define TAB_WIDTH 4
 
+#define MENU_BACKGROUND_COLOR (has_colors ? 0xFFFF : 0xC)
+#define MENU_SHADOW_COLOR (has_colors ? 0b0111101111101111 : 0x5)
+#define MENU_SELECTION_COLOR (has_colors ? 0b0011101111111111 : 0x0)
+#define WHITE_COLOR (has_colors ? 0xFFFF : 0xF)
+#define STR_SELECTION_COLOR (has_colors?0b0011101111111111:0xA)
+
+
 void putChar(void* scrbuf, unsigned x, unsigned y, uint8_t chr);
 
 void putCharColor(void* scrbuf, unsigned x, unsigned y, uint8_t chr, uint16_t chrcolor, uint16_t bgcolor);
@@ -24,9 +31,6 @@ void dispCursor(void* scrbuf, int offset, char* displinep);
 
 void dispCursor_nosoftbreak(void* scrbuf, int offset, char* displinep, int cursorscreencol);
 
-void dispRect(void* scrbuf, int x, int y, int w, int h, int color);
-
-void filledRect(void* scrbuf, int x, int y, int w, int h, int color);
 
 void dispHorizLine(void* scrbuf, int x, int y, int l, int color);
 
@@ -35,5 +39,14 @@ void dispVertLine(void* scrbuf, int x, int y, int l, int color);
 void dispRect(void* scrbuf, int x, int y, int w, int h, int color);
 
 void filledRect(void* scrbuf, int x, int y, int w, int h, int color);
+
+void clearScreen(void* scrbuf);
+
+
+void showBuffer(void* scrbuf);
+
+void* initScrbuf();
+
+void freeScrbuf(void* scrbuf);
 
 #endif
