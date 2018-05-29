@@ -349,6 +349,8 @@ void showBuffer(void* scrbuf)
 
 void* initScrbuf()
 {
+    screen_width = 320;
+    screen_height = 240;
     pixel_16_bits = has_colors;
     if(pixel_16_bits) {
         screen_type = SCR_320x240_565;
@@ -358,11 +360,14 @@ void* initScrbuf()
         screen_type = SCR_320x240_4;
         screen_bytes_size = screen_height * screen_width / 2;
     }
-    screen_width = 320;
-    screen_height = 240;
-    if(!lcd_init(screen_type))
+    if(!lcd_init(screen_type)) {
+        printf("lcd_init failed\n");
         return NULL;
-    return malloc(screen_bytes_size);
+    }
+    void* scrbuf = malloc(screen_bytes_size);
+    if(scrbuf == NULL)
+        printf("Failed to allocate %i bytes for scrbuf\n", screen_bytes_size);
+    return scrbuf;
 }
 
 void freeScrbuf(void* scrbuf)
