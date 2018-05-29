@@ -1,6 +1,7 @@
 #include <os.h>
 #include "actions.h"
 #include "fileio.h"
+#include "output.h"
 
 int save_on_close_action(void* scrbuf, char* path, char* savepath, char* textbuffer)
 {  // returns 0 if closing is cancelled, 1 otherwise

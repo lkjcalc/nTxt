@@ -43,6 +43,15 @@ void filledRect(void* scrbuf, int x, int y, int w, int h, int color);
 void clearScreen(void* scrbuf);
 
 
+void ntxt_show_msgbox(const char* title, const char* msg);
+
+unsigned ntxt_show_msgbox_2b(const char* title, const char* msg, const char* button1, const char* button2);
+
+unsigned ntxt_show_msgbox_3b(const char* title, const char* msg, const char* button1, const char* button2, const char* button3);
+
+int ntxt_show_msg_user_input(const char* title, const char* msg, char* defaultvalue, char** value_ref);
+
+
 void showBuffer(void* scrbuf);
 
 void* initScrbuf();

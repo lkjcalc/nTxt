@@ -309,6 +309,39 @@ void clearScreen(void* scrbuf)
     memset(scrbuf, 0xFF, screen_bytes_size);
 }
 
+
+void ntxt_show_msgbox(const char* title, const char* msg)
+{
+    lcd_init(SCR_TYPE_INVALID);
+    show_msgbox(title, msg);
+    lcd_init(screen_type);
+}
+
+unsigned ntxt_show_msgbox_2b(const char* title, const char* msg, const char* button1, const char* button2)
+{
+    lcd_init(SCR_TYPE_INVALID);
+    unsigned res = show_msgbox_2b(title, msg, button1, button2);
+    lcd_init(screen_type);
+    return res;
+}
+
+unsigned ntxt_show_msgbox_3b(const char* title, const char* msg, const char* button1, const char* button2, const char* button3)
+{
+    lcd_init(SCR_TYPE_INVALID);
+    unsigned res = show_msgbox_3b(title, msg, button1, button2, button3);
+    lcd_init(screen_type);
+    return res;
+}
+
+int ntxt_show_msg_user_input(const char* title, const char* msg, char* defaultvalue, char** value_ref)
+{
+    lcd_init(SCR_TYPE_INVALID);
+    int res = show_msg_user_input(title, msg, defaultvalue, value_ref);
+    lcd_init(screen_type);
+    return res;
+}
+
+
 void showBuffer(void* scrbuf)
 {
     lcd_blit(scrbuf, screen_type);

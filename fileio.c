@@ -2,6 +2,7 @@
 #include "fileio.h"
 #include "filebrowser.h"
 #include "actions.h"
+#include "output.h"
 
 int get_last_doc(char* path)
 {
