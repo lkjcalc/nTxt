@@ -2,7 +2,7 @@ nTxt - Nspire Text Editor
 =========================
 
 nTxt is a text editor for the Nspire calculator series.
-It is compatible with ndless3.1 r872 or higher, ndless3.6, ndless3.9, ndless4.0, ndless4.2, ndless4.4,
+It is compatible with all Ndless releases after ndless3.1 r872 or higher,
 both clickpad/touchpad and CX Nspires.
 
 File Association is supported, nTxt registers itself automatically on first start for .txt files.
@@ -19,9 +19,9 @@ Menu/Doc	open menu
 Ctrl+s		save document
 Ctrl+o		open document
 
-Ctrl+c		copy selected text
-Ctrl+x		cut selected text
-Ctrl+v		paste selected text
+Ctrl+c		copy selected text to clipboard
+Ctrl+x		cut selected text to clipboard
+Ctrl+v		paste clipboard
 Ctrl+a		select all
 
 Ctrl+f		find
@@ -80,4 +80,4 @@ chose "Change Text Wrapping Mode" in the menu.
 The source code is available on github (https://github.com/lkjcalc/nTxt).
 
 ~~~
-lkj, 13 March 2017
+lkj, 30 May 2018
