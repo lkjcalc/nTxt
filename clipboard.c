@@ -15,7 +15,8 @@ static const unsigned clipboard_get_addrs[] = {0x104A1B94, 0x104860A8, //Classic
                                                0x10581C28, 0x10582194, //CX 4.0.3
                                                0x10596AF0, 0x1059709C, //CX 4.2
                                                0, 0, //CX 4.3
-                                               0x105A73E4, 0x105A7988 //CX 4.4
+                                               0x105A73E4, 0x105A7988, //CX 4.4
+                                               0, 0, //CX 4.5
                                               };
 #define os_clipboard_get SYSCALL_CUSTOM(clipboard_get_addrs, int, char**, const char*)
 
@@ -33,7 +34,8 @@ static const unsigned clipboard_add_addrs[] = {0x104A1E38, 0x1048634C, //Classic
                                                0x10581EA4, 0x10582410, //CX 4.0.3
                                                0x10596D6C, 0x10597318, //CX 4.2
                                                0, 0, //CX 4.3
-                                               0x105A7660, 0x105A7C04 //CX 4.4
+                                               0x105A7660, 0x105A7C04, //CX 4.4
+                                               0, 0, //CX 4.5
                                               };
 #define os_clipboard_add SYSCALL_CUSTOM(clipboard_add_addrs, int, const char*, int, const char*)
 
@@ -51,7 +53,8 @@ static const unsigned clipboard_reset_addrs[] = {0x104A1EE4, 0x104863F8, //Class
                                                  0x10581F80, 0x105824EC, //CX 4.0.3
                                                  0x10596E48, 0x105973F4, //CX 4.2
                                                  0, 0, //CX 4.3
-                                                 0x105A773C, 0x105A7CE0 //CX 4.4
+                                                 0x105A773C, 0x105A7CE0, //CX 4.4
+                                                 0, 0, //CX 4.5
                                                 };
 #define os_clipboard_reset SYSCALL_CUSTOM(clipboard_reset_addrs, int, void)
 
@@ -62,28 +65,65 @@ static const unsigned clipboard_reset_addrs[] = {0x104A1EE4, 0x104863F8, //Class
 #define CLIPBOARD_TYPE_TEXT "t\0e\0x\0t\0/\0p\0l\0a\0i\0n\0\0"
 
 
-int clipboard_settext(const char* s, unsigned len){
-    const char textplain[] = CLIPBOARD_TYPE_TEXT;
-    if(os_clipboard_reset() != 0){
-        printf("os_clipboard_reset() failed\n");
-        return 1;
+static char* clipboard_content;
+static int clipboard_length;
+
+static int use_internal_clipboard() {
+    static int use_internal = -1;
+    if(use_internal == -1) {
+        use_internal = (os_clipboard_get == NULL || os_clipboard_add == NULL || os_clipboard_reset == NULL);
     }
-    if(os_clipboard_add(s, len, textplain) != 0){
-        printf("os_clipboard_add(...) failed\n");
-        return 1;
+    return use_internal;
+}
+
+int clipboard_settext(const char* s, unsigned len) {
+    if(len == 0)
+        return 0;
+    if(!use_internal_clipboard()) {
+        const char textplain[] = CLIPBOARD_TYPE_TEXT;
+        if(os_clipboard_reset() != 0) {
+            printf("os_clipboard_reset() failed\n");
+            return 1;
+        }
+        if(os_clipboard_add(s, len, textplain) != 0) {
+            printf("os_clipboard_add(...) failed\n");
+            return 1;
+        }
+    }
+    else {
+        clipboard_free();
+        clipboard_content = malloc(len);
+        if(clipboard_content == NULL) {
+            printf("malloc for clipboard failed\n");
+            return 1;
+        }
+        memcpy(clipboard_content, s, len);
+        clipboard_length = len;
     }
     return 0;
 }
 
-int clipboard_gettext(char** s, int* len){
-    const char textplain[] = CLIPBOARD_TYPE_TEXT;
-    *s = NULL;
-    *len = 0;
-    int length = os_clipboard_get(s, textplain);
-    if(length < 0){
-        printf("os_clipboard_get(...) failed\n");
-        return 1;
+int clipboard_gettext(char** s, int* len) {
+    if(!use_internal_clipboard()) {
+        const char textplain[] = CLIPBOARD_TYPE_TEXT;
+        *s = NULL;
+        *len = 0;
+        int length = os_clipboard_get(s, textplain);
+        if(length < 0) {
+            printf("os_clipboard_get(...) failed\n");
+            return 1;
+        }
+        *len = length;
     }
-    *len = length;
+    else {
+        *s = clipboard_content;
+        *len = clipboard_length;
+    }
     return 0;
+}
+
+void clipboard_free() {
+    free(clipboard_content);
+    clipboard_content = NULL;
+    clipboard_length = 0;
 }

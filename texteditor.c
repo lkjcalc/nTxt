@@ -9,6 +9,7 @@
 #include "editactions.h"
 #include "history.h"
 #include "undoredo.h"
+#include "clipboard.h"
 
 #define DELAY_FIRST 60 /*~650 to 850ms*/
 #define DELAY_AFTER 6
@@ -645,6 +646,7 @@ int main(int argc, char* argv[])
     free(textbuffer);
     freeScrbuf(scrbuf);
     history_free();
+    clipboard_free();
     refresh_osscr();
     return 0;
 }
