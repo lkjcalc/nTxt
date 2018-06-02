@@ -23,7 +23,7 @@ static inline void setPixelBuf_color(void* scrbuf, unsigned x, unsigned y, uint1
 static inline void setPixelBuf_grey(void* scrbuf, unsigned x, unsigned y, uint8_t color)
 {
     if (x < screen_width && y < screen_height) {
-        uint8_t* p = (uint8_t*) scrbuf + 2 * x + screen_width / 2 * y;
+        uint8_t* p = (uint8_t*) scrbuf + x / 2 + screen_width / 2 * y;
         if (x % 2)
             *p = (*p & 0xF0) | color;
         else
