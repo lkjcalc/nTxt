@@ -1,5 +1,3 @@
-// todo profile again: now with buffered has_colors value, does splitting all code for color & b/w still make sense?
-
 #include <os.h>
 #include "output.h"
 #include "navigation.h"

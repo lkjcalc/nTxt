@@ -10,7 +10,7 @@
 #define MENU_SHADOW_COLOR (has_colors ? 0b0111101111101111 : 0x5)
 #define MENU_SELECTION_COLOR (has_colors ? 0b0011101111111111 : 0x0)
 #define WHITE_COLOR (has_colors ? 0xFFFF : 0xF)
-#define STR_SELECTION_COLOR (has_colors?0b0011101111111111:0xA)
+#define STR_SELECTION_COLOR (has_colors ? 0b0011101111111111 : 0xA)
 
 
 void putChar(void* scrbuf, unsigned x, unsigned y, uint8_t chr);
