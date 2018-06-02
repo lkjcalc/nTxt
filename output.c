@@ -150,13 +150,15 @@ void dispStringWithSelection(void* scrbuf, unsigned x, unsigned y, char* message
 }
 
 void dispStringWithSelection_nosoftbreak(void* scrbuf, const char* textbuffer, int pos, int cursorscreencol, int selectionstart, int selectionend) {
-    char* linelist[screen_height / CHAR_HEIGHT];
-    int poslist[screen_height / CHAR_HEIGHT];  // contains the pos of the first char of the respective line
-    memset(&linelist, 0, sizeof(char*) * screen_height / CHAR_HEIGHT);
+    const unsigned NUM_LINES = screen_height / CHAR_HEIGHT;
+    const unsigned NUM_COLS = screen_width / CHAR_WIDTH;
+    char* linelist[NUM_LINES];
+    int poslist[NUM_LINES];  // contains the pos of the first char of the respective line
+    memset(&linelist, 0, sizeof(char*) * NUM_LINES);
     unsigned i;
     const char* p = textbuffer;
     int len = 0;
-    for (i = 0; i < screen_height / CHAR_HEIGHT; i++) {
+    for (i = 0; i < NUM_LINES; i++) {
         if (strchr(p, '\n') != NULL)
             len = strchr(p, '\n') - p;
         else
@@ -177,11 +179,11 @@ void dispStringWithSelection_nosoftbreak(void* scrbuf, const char* textbuffer, i
         p++;
     }
     int coloffset = getw_nosoftbreak(textbuffer, pos) - cursorscreencol;
-    for (i = 0; linelist[i] != 0; i++) {
+    for (i = 0; i < NUM_LINES && linelist[i] != 0; i++) {
         int linepos = gotow_nosoftbreak(linelist[i], 0, coloffset);
         int xoff = getw_nosoftbreak(linelist[i], linepos) - coloffset;
         unsigned w = 0;
-        for (; linelist[i][linepos] != '\0' && w < screen_width / CHAR_WIDTH; linepos++) {
+        for (; linelist[i][linepos] != '\0' && w < NUM_COLS; linepos++) {
             if (linelist[i][linepos] == '\t') {
                 if (poslist[i] + linepos >= selectionstart && poslist[i] + linepos < selectionend) {
                     do {
