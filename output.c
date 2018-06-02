@@ -5,84 +5,61 @@
 #include "navigation.h"
 #include "charmap_8x12.h"
 
-static scr_type_t screen_type;
-static bool pixel_16_bits;
+static scr_type_t buffer_type;
 static unsigned screen_width;
 static unsigned screen_height;
 static int screen_bytes_size;
 
 
-static inline void setPixelBuf_color(void* scrbuf, unsigned x, unsigned y, uint16_t color)
-{
+static inline void setPixelBuf_color(void* scrbuf, unsigned x, unsigned y, uint16_t color) {
     if (x < screen_width && y < screen_height) {
-        uint16_t* p = (uint16_t * )(scrbuf + 2 * x + 2 * screen_width * y);
+        uint16_t* p = (uint16_t * )(scrbuf + 2*screen_width*y + 2*x);
         *p = color;
     }
 }
 
-static inline void setPixelBuf_grey(void* scrbuf, unsigned x, unsigned y, uint8_t color)
-{
+static inline void setPixelBuf_grey(void* scrbuf, unsigned x, unsigned y, uint8_t color) {
     if (x < screen_width && y < screen_height) {
-        uint8_t* p = (uint8_t*) scrbuf + x / 2 + screen_width / 2 * y;
+        uint8_t* p = (uint8_t*) scrbuf + screen_width/2*y + x/2;
         if (x % 2)
             *p = (*p & 0xF0) | color;
         else
-            *p = (*p & 0x0F) | color << 4;
+            *p = (*p & 0x0F) | (color << 4);
     }
 }
 
-void putChar(void* scrbuf, unsigned x, unsigned y, uint8_t chr)
-{
+static inline void setPixelBuf(void* scrbuf, unsigned x, unsigned y, uint16_t color) {
+    if (buffer_type == SCR_320x240_4)
+        setPixelBuf_grey(scrbuf, x, y, color);
+    else
+        setPixelBuf_color(scrbuf, x, y, color);
+}
+
+void putChar(void* scrbuf, unsigned x, unsigned y, uint8_t chr) {
     int i, j, pixelOn;
-    if (pixel_16_bits) {
-        for (i = 0; i < CHAR_HEIGHT; i++) {
-            for (j = 0; j < CHAR_WIDTH; j++) {
-                pixelOn = charMap_ascii[chr][i] << j;
-                pixelOn = pixelOn & 0b10000000;
-                if (pixelOn) {
-                    setPixelBuf_color(scrbuf, x + j, y + i, 0);
-                }
-            }
-        }
-    }
-    else {
-        for (i = 0; i < CHAR_HEIGHT; i++) {
-            for (j = 0; j < CHAR_WIDTH; j++) {
-                pixelOn = charMap_ascii[chr][i] << j;
-                pixelOn = pixelOn & 0b10000000;
-                if (pixelOn) {
-                    setPixelBuf_grey(scrbuf, x + j, y + i, 0);
-                }
+    for (i = 0; i < CHAR_HEIGHT; i++) {
+        for (j = 0; j < CHAR_WIDTH; j++) {
+            pixelOn = charMap_ascii[chr][i] << j;
+            pixelOn = pixelOn & 0b10000000;
+            if (pixelOn) {
+                setPixelBuf(scrbuf, x + j, y + i, 0);
             }
         }
     }
 }
 
-void putCharColor(void* scrbuf, unsigned x, unsigned y, uint8_t chr, uint16_t chrcolor, uint16_t bgcolor)
-{
+void putCharColor(void* scrbuf, unsigned x, unsigned y, uint8_t chr, uint16_t chrcolor, uint16_t bgcolor) {
     int i, j, pixelOn;
-    if (pixel_16_bits) {
-        for (i = 0; i < CHAR_HEIGHT; i++) {
-            for (j = 0; j < CHAR_WIDTH; j++) {
-                pixelOn = charMap_ascii[chr][i] << j;
-                pixelOn = pixelOn & 0x80;
-                setPixelBuf_color(scrbuf, x + j, y + i, pixelOn ? chrcolor : bgcolor);
-            }
-        }
-    }
-    else {
-        for (i = 0; i < CHAR_HEIGHT; i++) {
-            for (j = 0; j < CHAR_WIDTH; j++) {
-                pixelOn = charMap_ascii[chr][i] << j;
-                pixelOn = pixelOn & 0x80;
-                setPixelBuf_grey(scrbuf, x + j, y + i, pixelOn ? chrcolor : bgcolor);
-            }
+    for (i = 0; i < CHAR_HEIGHT; i++) {
+        for (j = 0; j < CHAR_WIDTH; j++) {
+            pixelOn = charMap_ascii[chr][i] << j;
+            pixelOn = pixelOn & 0x80;
+            setPixelBuf(scrbuf, x + j, y + i, pixelOn ? chrcolor : bgcolor);
         }
     }
 }
 
-void dispString(void* scrbuf, unsigned x, unsigned y, const char* message)
-{
+void dispString(void* scrbuf, unsigned x, unsigned y, const char* message) {
     int l = strlen(message);
     int i;
     unsigned line = 0, col = 0;
@@ -106,8 +83,7 @@ void dispString(void* scrbuf, unsigned x, unsigned y, const char* message)
     }
 }
 
-void dispStringColor(void* scrbuf, unsigned x, unsigned y, const char* message, uint16_t chrcolor, uint16_t bgcolor)
-{
+void dispStringColor(void* scrbuf, unsigned x, unsigned y, const char* message, uint16_t chrcolor, uint16_t bgcolor) {
     const char* p;
     unsigned line = 0, col = 0;
     for (p = message; *p; ++p) {
@@ -135,8 +111,7 @@ void dispStringColor(void* scrbuf, unsigned x, unsigned y, const char* message, 
     }
 }
 
-void dispStringWithSelection(void* scrbuf, unsigned x, unsigned y, char* message, int selectionstart, int selectionend)
-{
+void dispStringWithSelection(void* scrbuf, unsigned x, unsigned y, char* message, int selectionstart, int selectionend) {
     int l = strlen(message);
     int i;
     unsigned line = 0, col = 0;
@@ -174,8 +149,7 @@ void dispStringWithSelection(void* scrbuf, unsigned x, unsigned y, char* message
     }
 }
 
-void dispStringWithSelection_nosoftbreak(void* scrbuf, const char* textbuffer, int pos, int cursorscreencol, int selectionstart, int selectionend)
-{
+void dispStringWithSelection_nosoftbreak(void* scrbuf, const char* textbuffer, int pos, int cursorscreencol, int selectionstart, int selectionend) {
     char* linelist[screen_height / CHAR_HEIGHT];
     int poslist[screen_height / CHAR_HEIGHT];  // contains the pos of the first char of the respective line
     memset(&linelist, 0, sizeof(char*) * screen_height / CHAR_HEIGHT);
@@ -232,8 +206,7 @@ void dispStringWithSelection_nosoftbreak(void* scrbuf, const char* textbuffer, i
     }
 }
 
-void dispCursor(void* scrbuf, int offset, char* displinep)
-{ //offset=where is cursor relative to displinep
+void dispCursor(void* scrbuf, int offset, char* displinep) {  // offset = where is cursor relative to displinep
     unsigned row = 0;
     unsigned col = 0;
     int i;
@@ -257,8 +230,7 @@ void dispCursor(void* scrbuf, int offset, char* displinep)
     dispVertLine(scrbuf, col * CHAR_WIDTH, row * CHAR_HEIGHT, CHAR_HEIGHT, 0x0);
 }
 
-void dispCursor_nosoftbreak(void* scrbuf, int offset, char* displinep, int cursorscreencol)
-{
+void dispCursor_nosoftbreak(void* scrbuf, int offset, char* displinep, int cursorscreencol) {
     char restore = displinep[offset];
     displinep[offset] = '\0';
     int row = countnewl(displinep);
@@ -266,112 +238,87 @@ void dispCursor_nosoftbreak(void* scrbuf, int offset, char* displinep, int curso
     dispVertLine(scrbuf, cursorscreencol * CHAR_WIDTH, row * CHAR_HEIGHT, CHAR_HEIGHT, 0x0);
 }
 
-void dispHorizLine(void* scrbuf, int x, int y, int l, int color)
-{
-    if (pixel_16_bits) {
-        while (l--)
-            setPixelBuf_color(scrbuf, x++, y, color);
-    }
-    else{
-        while (l--)
-            setPixelBuf_grey(scrbuf, x++, y, color);
-    }
+void dispHorizLine(void* scrbuf, int x, int y, int l, int color) {
+    while (l--)
+        setPixelBuf(scrbuf, x++, y, color);
 }
 
-void dispVertLine(void* scrbuf, int x, int y, int l, int color)
-{
-    if (pixel_16_bits) {
-        while (l--)
-            setPixelBuf_color(scrbuf, x, y++, color);
-    }
-    else{
-        while (l--)
-            setPixelBuf_grey(scrbuf, x, y++, color);
-    }
+void dispVertLine(void* scrbuf, int x, int y, int l, int color) {
+    while (l--)
+        setPixelBuf(scrbuf, x, y++, color);
 }
 
-void dispRect(void* scrbuf, int x, int y, int w, int h, int color)
-{
+void dispRect(void* scrbuf, int x, int y, int w, int h, int color) {
     dispHorizLine(scrbuf, x, y, w, color);
     dispHorizLine(scrbuf, x, y + h - 1, w, color);
     dispVertLine(scrbuf, x, y + 1, h - 2, color);
     dispVertLine(scrbuf, x + w - 1, y + 1, h - 2, color);
 }
 
-void filledRect(void* scrbuf, int x, int y, int w, int h, int color)
-{
+void filledRect(void* scrbuf, int x, int y, int w, int h, int color) {
     while (h--)
         dispHorizLine(scrbuf, x, y++, w, color);
 }
 
-void clearScreen(void* scrbuf)
-{
+void clearScreen(void* scrbuf) {
     memset(scrbuf, 0xFF, screen_bytes_size);
 }
 
 
-void ntxt_show_msgbox(const char* title, const char* msg)
-{
+void ntxt_show_msgbox(const char* title, const char* msg) {
     lcd_init(SCR_TYPE_INVALID);
     show_msgbox(title, msg);
-    lcd_init(screen_type);
+    lcd_init(buffer_type);
 }
 
-unsigned ntxt_show_msgbox_2b(const char* title, const char* msg, const char* button1, const char* button2)
-{
+unsigned ntxt_show_msgbox_2b(const char* title, const char* msg, const char* button1, const char* button2) {
     lcd_init(SCR_TYPE_INVALID);
     unsigned res = show_msgbox_2b(title, msg, button1, button2);
-    lcd_init(screen_type);
+    lcd_init(buffer_type);
     return res;
 }
 
-unsigned ntxt_show_msgbox_3b(const char* title, const char* msg, const char* button1, const char* button2, const char* button3)
-{
+unsigned ntxt_show_msgbox_3b(const char* title, const char* msg, const char* button1, const char* button2, const char* button3) {
     lcd_init(SCR_TYPE_INVALID);
     unsigned res = show_msgbox_3b(title, msg, button1, button2, button3);
-    lcd_init(screen_type);
+    lcd_init(buffer_type);
     return res;
 }
 
-int ntxt_show_msg_user_input(const char* title, const char* msg, char* defaultvalue, char** value_ref)
-{
+int ntxt_show_msg_user_input(const char* title, const char* msg, char* defaultvalue, char** value_ref) {
     lcd_init(SCR_TYPE_INVALID);
     int res = show_msg_user_input(title, msg, defaultvalue, value_ref);
-    lcd_init(screen_type);
+    lcd_init(buffer_type);
     return res;
 }
 
 
-void showBuffer(void* scrbuf)
-{
-    lcd_blit(scrbuf, screen_type);
+void showBuffer(void* scrbuf) {
+    lcd_blit(scrbuf, buffer_type);
 }
 
-void* initScrbuf()
-{
+void* initScrbuf() {
     screen_width = 320;
     screen_height = 240;
-    pixel_16_bits = has_colors;
-    if(pixel_16_bits) {
-        screen_type = SCR_320x240_565;
+    if (has_colors) {
+        buffer_type = SCR_320x240_565;
         screen_bytes_size = screen_height * screen_width * 2;
     }
     else {
-        screen_type = SCR_320x240_4;
+        buffer_type = SCR_320x240_4;
         screen_bytes_size = screen_height * screen_width / 2;
     }
-    if(!lcd_init(screen_type)) {
+    if (!lcd_init(buffer_type)) {
         printf("lcd_init failed\n");
         return NULL;
     }
     void* scrbuf = malloc(screen_bytes_size);
-    if(scrbuf == NULL)
+    if (scrbuf == NULL)
         printf("Failed to allocate %i bytes for scrbuf\n", screen_bytes_size);
     return scrbuf;
 }
 
-void freeScrbuf(void* scrbuf)
-{
+void freeScrbuf(void* scrbuf) {
     free(scrbuf);
     lcd_init(SCR_TYPE_INVALID);
 }
